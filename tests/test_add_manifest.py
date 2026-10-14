@@ -108,12 +108,22 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(sha, hashlib.sha256(b"Write-Output hello\n").hexdigest())
 
     def test_noop_source_hashes_canonical_lf_even_with_crlf_input(self) -> None:
-        with mock.patch.object(
-            am.Path, "read_bytes", return_value=b"Write-Output hello\r\n"
+        with (
+            mock.patch.object(am.Path, "is_file", return_value=True),
+            mock.patch.object(
+                am.Path, "read_bytes", return_value=b"Write-Output hello\r\n"
+            ),
         ):
             _, sha = am.noop_source("acme/scoop-tools", "stable")
         expected = hashlib.sha256(b"Write-Output hello\n").hexdigest()
         self.assertEqual(sha, expected)
+
+    def test_noop_source_requires_noop_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(am, "NOOP_FILE", Path(tmp) / "scripts" / "noop.ps1"):
+                with self.assertRaises(SystemExit) as ctx:
+                    am.noop_source("acme/scoop-tools")
+        self.assertIn("noop.ps1", str(ctx.exception))
 
     def test_noop_source_rejects_invalid_repository(self) -> None:
         with self.assertRaises(SystemExit):

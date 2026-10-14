@@ -127,6 +127,9 @@ def noop_source(repository: str, ref: str = "main") -> tuple[str, str]:
     if not re.fullmatch(r"[A-Za-z0-9._/-]+", ref) or ".." in ref.split("/"):
         sys.exit("error: bucket ref contains unsupported characters")
     url = f"https://raw.githubusercontent.com/{repository}/{ref}/scripts/noop.ps1"
+    if not NOOP_FILE.is_file():
+        sys.exit(f"error: {NOOP_FILE} not found; shim manifests hash the bucket's "
+                 "scripts/noop.ps1, so run from a bucket checkout or pass --bucket-dir")
     raw_bytes = NOOP_FILE.read_bytes().replace(b"\r\n", b"\n")
     sha = hashlib.sha256(raw_bytes).hexdigest()
     return url, sha

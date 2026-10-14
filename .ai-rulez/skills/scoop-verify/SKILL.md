@@ -48,14 +48,15 @@ actual workflow failures from regression-derived examples.
 
 ### PyPI shims: verify all three noop values
 
-Read the `scoop-add` skill's `scripts/add_manifest.py` (`noop_source`) and the bucket's `scripts/noop.ps1`. The
-scaffolder derives its SHA-256 from local bytes with CRLF normalized to LF;
-`.gitattributes` keeps the published file LF. To calculate the expected pair,
-run from the bucket root, replacing the skill directory, repository and ref with
-the intended values (the scaffolder's default ref is `main`):
+Read the bucket's `scripts/noop.ps1` and the shim manifests. The `scoop-add`
+scaffolder derives the SHA-256 from the local bytes with CRLF normalized to LF;
+`.gitattributes` keeps the published file LF. This skill does not depend on
+`scoop-add` being installed: calculate the expected pair directly. Run from the
+bucket root, replacing the repository and ref with the intended values (the
+scaffolder's default ref is `main`):
 
 ```sh
-python -c 'import sys; sys.path.insert(0, "<scoop-add skill dir>/scripts"); from add_manifest import noop_source; print(noop_source("<owner>/<repository>", "<ref>"))'
+python -c 'import hashlib, pathlib; b = pathlib.Path("scripts/noop.ps1").read_bytes().replace(b"\r\n", b"\n"); print("https://raw.githubusercontent.com/<owner>/<repository>/<ref>/scripts/noop.ps1", hashlib.sha256(b).hexdigest())'
 ```
 
 Compare the result with each affected shim's concrete `url` and `hash`, including
