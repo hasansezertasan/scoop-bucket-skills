@@ -1,0 +1,11 @@
+{
+  "name": "scoop-bucket-skills",
+  "owner": { "name": "hasansezertasan" },
+  "plugins": [
+    {
+      "name": "scoop-bucket-skills",
+      "source": "./",
+      "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests."
+    }
+  ]
+}
