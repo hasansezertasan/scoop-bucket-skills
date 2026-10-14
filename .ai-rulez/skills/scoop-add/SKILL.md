@@ -14,13 +14,17 @@ x-ai-rulez:
 Read the [template contract](../../references/contract.md) for the task names and paths
 this skill relies on.
 
-Use `scripts/add_manifest.py`; do not create a manifest from scratch. First choose
-the route from what upstream publishes:
+Use the scaffolder bundled with this skill, `scripts/add_manifest.py` in this
+skill's directory; do not create a manifest from scratch. Run it from the bucket
+checkout (or pass `--bucket-dir <path>` / set `SCOOP_BUCKET_DIR`), as
+`python <skill-dir>/scripts/add_manifest.py <route> ...`. It needs only the
+standard library and a `bucket/` directory; shims also need the bucket's
+`scripts/noop.ps1`. First choose the route from what upstream publishes:
 
 | Upstream artifact | Route | Command |
 | --- | --- | --- |
-| Python CLI on PyPI | shim | `mise run add-manifest shim <package>` |
-| Prebuilt Windows `.zip` | binary | `mise run add-manifest binary <owner>/<repository>` |
+| Python CLI on PyPI | shim | `add_manifest.py shim <package>` |
+| Prebuilt Windows `.zip` | binary | `add_manifest.py binary <owner>/<repository>` |
 | Both | both | run both commands; use `--via pipx` for the shim sibling |
 
 For a shim, `uv` is the default. `--via pipx` gives the manifest a `-pipx`

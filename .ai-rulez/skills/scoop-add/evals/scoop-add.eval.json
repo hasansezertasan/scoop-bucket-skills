@@ -8,7 +8,7 @@
       "expect_trigger": true,
       "rubric_items": [
         {
-          "text": "Uses scripts/add_manifest.py through the add-manifest mise task and does not create a manifest from scratch."
+          "text": "Runs the scaffolder bundled with the skill (scripts/add_manifest.py) from the bucket checkout and does not create a manifest from scratch."
         },
         {
           "text": "Names shim and binary routes, and uses --via pipx for the shim sibling when both are added."

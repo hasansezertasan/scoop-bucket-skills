@@ -19,7 +19,7 @@ separate observed Cobo workflow failure and verification evidence.
 | `test_update_manifest_updates_versioned_extract_dir_and_bin_from_autoupdate`, `test_update_manifest_updates_versioned_paths_fallback_without_autoupdate_templates` | String-valued paths can be updated, but URL/hash success alone does not establish installed layout. |
 | `_update_manifest`: explicit `bin`/`extract_dir` template `.replace()` calls | Array-valued bin templates are unsupported by this updater, despite being valid Scoop syntax. Concrete bin arrays do not receive the string fallback. Remove redundant bin templates when the installed relative path is version-independent; keep concrete aliases and versioned extraction templates. Shortcut template processing is nested under explicit bin handling. Disclose remaining automation limits. These boundaries are implementation-derived, not covered by the named string-path regressions. |
 | `tests/test_add_manifest.py`: extraction override tests; verification-cases reference | `extract_dir` changes the root against which `bin` resolves. Do not duplicate the extraction prefix. |
-| `test_pypi_bump_preserves_shape`; `scripts/add_manifest.py`: `noop_source` | PyPI version updates leave static noop URL/hash intact; repair mismatched noop identity/bytes separately, including the pipx sibling. |
+| `test_pypi_bump_preserves_shape`; `scoop-add/scripts/add_manifest.py`: `noop_source` | PyPI version updates leave static noop URL/hash intact; repair mismatched noop identity/bytes separately, including the pipx sibling. |
 
 ## Evidence to collect during a repair
 
