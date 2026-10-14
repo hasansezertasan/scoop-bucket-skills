@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "deprecate-with-pipx-sibling",
+      "description": "Bound the exact manifest set, including a real -pipx sibling, and preserve alternatives.",
+      "prompt": "Upstream retired the widget tool. The bucket has widget.json and widget-pipx.json, and another manifest depends on widget. How should I retire it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Establishes deletion versus native deprecated-directory behavior before editing."
+        },
+        {
+          "text": "Identifies the exact manifests including the real -pipx sibling and does not touch unrelated look-alikes."
+        },
+        {
+          "text": "Finds dependents and preserves independent alternatives rather than breaking them."
+        },
+        {
+          "text": "Regenerates the README catalog and finishes with scoop-verify."
+        }
+      ],
+      "tags": [
+        "scoop-remove-or-deprecate",
+        "dependents",
+        "desk-exercise"
+      ]
+    },
+    {
+      "id": "removal-needs-no-windows-install",
+      "description": "A removal-only change needs the local gate but no new Windows install.",
+      "prompt": "I removed one manifest and regenerated the README. Do I need a Windows install run before the PR? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Says removal-only changes normally need the local gate without a new Windows install."
+        },
+        {
+          "text": "Requires mise run check and README regeneration."
+        },
+        {
+          "text": "Keeps passed, pending, and skipped distinct in the report."
+        }
+      ],
+      "tags": [
+        "scoop-remove-or-deprecate",
+        "verification",
+        "desk-exercise"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "scoop-bucket-skills",
+  "version": "0.1.0",
+  "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests.",
+  "author": {
+    "name": "Hasan Sezer Tasan",
+    "url": "https://github.com/hasansezertasan"
+  },
+  "repository": "https://github.com/hasansezertasan/scoop-bucket-skills",
+  "keywords": [
+    "scoop",
+    "bucket",
+    "windows",
+    "manifest"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Scoop Bucket Skills",
+    "shortDescription": "Operate a Scoop bucket's manifests",
+    "longDescription": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests.",
+    "developerName": "Hasan Sezer Tasan",
+    "category": "Development",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Verify this Scoop bucket change before I open a PR."
+    ]
+  }
+}

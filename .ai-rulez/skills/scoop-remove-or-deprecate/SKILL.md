@@ -11,6 +11,9 @@ x-ai-rulez:
 
 # Remove or deprecate a manifest
 
+Read the [template contract](../../references/contract.md) for the task names and paths
+this skill relies on.
+
 ## Establish the intended outcome
 
 Read `AGENTS.md`, the selected manifests, `scripts/add_manifest.py`,

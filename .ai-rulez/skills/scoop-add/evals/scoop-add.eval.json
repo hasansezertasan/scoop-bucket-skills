@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "shim-vs-binary-route",
+      "description": "Choose the route from what upstream publishes and use the scaffolder, not a hand-written manifest.",
+      "prompt": "I want to add the tool 'widget' to this bucket. Upstream publishes it on PyPI as a CLI and also ships a prebuilt Windows zip on GitHub releases (owner/widget). Which commands do I run? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Uses scripts/add_manifest.py through the add-manifest mise task and does not create a manifest from scratch."
+        },
+        {
+          "text": "Names shim and binary routes, and uses --via pipx for the shim sibling when both are added."
+        },
+        {
+          "text": "Notes that the script infers the bucket repository from origin and when --bucket-repository is needed."
+        },
+        {
+          "text": "Hands off to scoop-verify before a PR and keeps one package family per pull request."
+        }
+      ],
+      "tags": [
+        "scoop-add",
+        "route",
+        "desk-exercise"
+      ]
+    },
+    {
+      "id": "prerelease-seed",
+      "description": "Use --seed with --bin before the first release and flag the assumptions for later verification.",
+      "prompt": "The upstream project has no GitHub release yet but I know the binary name will be widget.exe in a zip. How do I add it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Uses --seed with --bin and explains the seeded tag and filename pattern are assumptions."
+        },
+        {
+          "text": "Treats the placeholder hash as intentional and says it must be verified once a real release exists."
+        },
+        {
+          "text": "Does not claim the Windows install passed and defers to scoop-verify."
+        }
+      ],
+      "tags": [
+        "scoop-add",
+        "seed",
+        "desk-exercise"
+      ]
+    }
+  ]
+}

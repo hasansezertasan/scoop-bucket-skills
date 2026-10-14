@@ -17,13 +17,14 @@ Install:
 /plugin install scoop-bucket-skills@scoop-bucket-skills
 ```
 
-The skills assume the layout in [CONTRACT.md](CONTRACT.md).
-Other agents can read `.agents/skills/<name>/SKILL.md`.
+The skills assume the layout in the
+[template contract](.ai-rulez/references/contract.md). Other agents can read
+`skills/<name>/SKILL.md`; see [host support](docs/host-support.md).
 
 ## Development
 
-Skills are authored in `.ai-rulez/`; `.claude/skills/`, `.agents/skills/` and
-`AGENTS.md` are generated and committed.
+Skills are authored in `.ai-rulez/`; root `skills/`, the plugin manifests and
+`AGENTS.md` are generated and committed. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```sh
 mise install
