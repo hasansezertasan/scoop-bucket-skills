@@ -21,7 +21,7 @@ Minimum template version: _unreleased (set when the template is converted to Cop
 | Path | Role |
 |---|---|
 | `bucket/*.json` | installable manifests |
-| `bucket/deprecated/` | retired manifests |
+| `deprecated/` | retired manifests (root level; never `bucket/deprecated/`) |
 | `scripts/add_manifest.py` | scaffolder (`noop_source`, CLI options) |
 | `scripts/update_manifests.py` | version, URL and hash updater |
 | `scripts/gen_readme_packages.py` | README package table |
