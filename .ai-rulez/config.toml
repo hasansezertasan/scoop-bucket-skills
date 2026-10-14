@@ -10,7 +10,8 @@ name = "Scoop Bucket Skills"
 #                every content type the built-in presets inline (rules and
 #                context), or those agents silently miss it.
 # Skills are not generated per agent: [plugin] below bundles them once into
-# root skills/, which Claude Code, Codex, OpenCode and pi all discover. The
+# root skills/, which Claude Code and Codex load as the plugin, and OpenCode
+# loads through opencode.json (it does not scan root skills/ on its own). The
 # claude, antigravity, codex, and opencode presets are omitted on purpose: they
 # would only add duplicate skill copies or a duplicate context file.
 presets = [{name = "agents-md", type = "markdown", path = "AGENTS.md", template = '''

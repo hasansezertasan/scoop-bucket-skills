@@ -1,14 +1,15 @@
 # Host support
 
 Five skills are generated into root `skills/` from `.ai-rulez/`. Claude Code
-and Codex have catalogs that install the repository root (`./`); OpenCode and
-pi discover root `skills/`.
+and Codex have catalogs that install the repository root (`./`). OpenCode
+does not scan root `skills/`; the root `opencode.json` points it there.
 
 | Host | Packaging | Evidence recorded |
 | --- | --- | --- |
 | Claude Code | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | `ai-rulez verify --plugin` (hash check of generated files); installation not yet recorded |
 | Codex | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | `ai-rulez verify --plugin`; installation not yet recorded |
-| OpenCode, pi | root `skills/` | Not evaluated |
+| OpenCode | `opencode.json` (`skills.paths`) | Not evaluated |
+| pi | none declared (no pi package or path configured) | Not evaluated |
 | Other agents | `AGENTS.md` | Not evaluated |
 
 Structural validation and completed model turns do not establish task success
