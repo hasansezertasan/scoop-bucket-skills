@@ -1,3 +1,11 @@
+---
+type: Concept
+title: Scoop Bucket Skills
+x-ai-rulez:
+  kind: context
+  id: scoop-bucket-skills
+---
+
 This repository is a Claude Code plugin (and its marketplace) holding skills
 for operating a Scoop bucket made from
 [`bucket-template`](https://github.com/hasansezertasan/bucket-template).

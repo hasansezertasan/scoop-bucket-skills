@@ -1,6 +1,12 @@
 ---
-name: scoop-add
+type: Playbook
+title: Scoop Add
 description: Use when adding a PyPI shim or prebuilt Windows binary manifest to this Scoop bucket.
+x-ai-rulez:
+  kind: skill
+  id: scoop-add
+  metadata:
+    name: scoop-add
 ---
 
 # Add a Scoop Manifest
