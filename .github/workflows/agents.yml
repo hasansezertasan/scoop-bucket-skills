@@ -1,0 +1,59 @@
+---
+name: Agent files
+# Guards the agent instructions and skills generated from .ai-rulez/. Kept
+# separate from tests.yml because that workflow ignores '**.md', and nearly every
+# source and output here is Markdown, so a source-only edit would merge with
+# stale AGENTS.md and skills. ai-rulez comes from .config/mise.toml, so the
+# version CI uses is the one Renovate bumps.
+# Deny-by-default; each job opts back into exactly what it needs.
+permissions: {}
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.ai-rulez/**'
+      - '.agents/**'
+      - '.claude/**'
+      # Also catches forbidden root instruction files if reintroduced, without
+      # action-validator requiring those intentionally absent files to exist.
+      - '*.md'
+      - 'scripts/gen_agents.py'
+      - 'tests/**'
+      - '.config/mise.toml'
+      - '.github/workflows/agents.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.ai-rulez/**'
+      - '.agents/**'
+      - '.claude/**'
+      - '*.md'
+      - 'scripts/gen_agents.py'
+      - 'tests/**'
+      - '.config/mise.toml'
+      - '.github/workflows/agents.yml'
+  workflow_dispatch:
+jobs:
+  freshness:
+    name: Agent files are up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install python and ai-rulez
+        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8  # v5.1.2
+        with:
+          install_args: python github:Goldziher/ai-rulez
+          cache: false
+      # The script rather than `mise run agents:check`: `mise run` installs every
+      # tool in the config first, and this job needs only the two above.
+      - name: Run generator unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Check generated agent files are up to date
+        run: python scripts/gen_agents.py --check
+      - name: Validate agent sources
+        run: ai-rulez validate

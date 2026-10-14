@@ -1,0 +1,35 @@
+{
+  "version": "1",
+  "files": [
+    ".agents/skills/scoop-add/SKILL.md",
+    ".agents/skills/scoop-fix-manifest/SKILL.md",
+    ".agents/skills/scoop-fix-manifest/references/repair-cases.md",
+    ".agents/skills/scoop-remove-or-deprecate/SKILL.md",
+    ".agents/skills/scoop-remove-or-deprecate/agents/openai.yaml",
+    ".agents/skills/scoop-remove-or-deprecate/references/lifecycle-cases.md",
+    ".agents/skills/scoop-update-triage/SKILL.md",
+    ".agents/skills/scoop-update-triage/references/triage-cases.md",
+    ".agents/skills/scoop-verify/SKILL.md",
+    ".agents/skills/scoop-verify/references/verification-cases.md",
+    ".claude/skills/scoop-add/SKILL.md",
+    ".claude/skills/scoop-fix-manifest/SKILL.md",
+    ".claude/skills/scoop-fix-manifest/references/repair-cases.md",
+    ".claude/skills/scoop-remove-or-deprecate/SKILL.md",
+    ".claude/skills/scoop-remove-or-deprecate/references/lifecycle-cases.md",
+    ".claude/skills/scoop-update-triage/SKILL.md",
+    ".claude/skills/scoop-update-triage/references/triage-cases.md",
+    ".claude/skills/scoop-verify/SKILL.md",
+    ".claude/skills/scoop-verify/references/verification-cases.md",
+    "AGENTS.md"
+  ],
+  "assets": {
+    ".agents/skills/scoop-fix-manifest/references/repair-cases.md": "fd38f3d3907645009e379fb20ed1467d70ad87f78ffe099a0b7e4986f86fc9b2",
+    ".agents/skills/scoop-remove-or-deprecate/references/lifecycle-cases.md": "1a3c8870a196e335d0db45e4d668a1371c9caf4998160175d21d3f1223dc592a",
+    ".agents/skills/scoop-update-triage/references/triage-cases.md": "2000cd7c8cfd3c5a48d7ac670a890d13dffb33e63460a73420b404880d21d693",
+    ".agents/skills/scoop-verify/references/verification-cases.md": "8b32a4fc2f9f90177a05c51d6bde14bbf210d03efcfdb1256ee1a9dc7806da47",
+    ".claude/skills/scoop-fix-manifest/references/repair-cases.md": "fd38f3d3907645009e379fb20ed1467d70ad87f78ffe099a0b7e4986f86fc9b2",
+    ".claude/skills/scoop-remove-or-deprecate/references/lifecycle-cases.md": "1a3c8870a196e335d0db45e4d668a1371c9caf4998160175d21d3f1223dc592a",
+    ".claude/skills/scoop-update-triage/references/triage-cases.md": "2000cd7c8cfd3c5a48d7ac670a890d13dffb33e63460a73420b404880d21d693",
+    ".claude/skills/scoop-verify/references/verification-cases.md": "8b32a4fc2f9f90177a05c51d6bde14bbf210d03efcfdb1256ee1a9dc7806da47"
+  }
+}

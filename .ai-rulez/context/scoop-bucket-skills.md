@@ -1,0 +1,36 @@
+---
+type: Concept
+title: Scoop Bucket Skills
+x-ai-rulez:
+  kind: context
+  id: scoop-bucket-skills
+---
+
+This repository is a Claude Code plugin (and its marketplace) holding skills
+for operating a Scoop bucket made from
+[`bucket-template`](https://github.com/hasansezertasan/bucket-template).
+
+#### Agent Instructions
+
+`.ai-rulez/` is the single source for agent instructions and skills.
+`AGENTS.md`, `.claude/skills/`, and `.agents/skills/` are generated from it;
+edit `.ai-rulez/` and run `mise run agents:generate`, then commit the
+generated files. `.claude-plugin/plugin.json` points the plugin at
+`.claude/skills/`; never hand-edit generated files.
+
+#### Invariants
+
+- The skills assume the layout in `CONTRACT.md`. Change a task name, path, or
+  workflow filename there and in every skill that cites it, together.
+- Skills read the bucket's scripts for exact CLI options instead of hardcoding
+  flags; keep it that way.
+- Skills never edit `.gitignore` or other template-managed files by hand.
+- Bucket setup is out of scope until the Copier template exists.
+
+#### Commands
+
+```sh
+mise install
+mise run check
+mise run agents:generate
+```

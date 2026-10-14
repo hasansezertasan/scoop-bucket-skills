@@ -1,0 +1,5 @@
+---
+interface:
+  display_name: "Remove or Deprecate a Scoop Manifest"
+  short_description: "Retire exact manifests and preserve viable alternatives"
+  default_prompt: "Use $scoop-remove-or-deprecate to retire exact manifests and verify the bucket."

@@ -1,6 +1,8 @@
 ---
 name: scoop-update-triage
-description: Triage scheduled or release-dispatch Scoop updates that fail, skip a release, or produce suspect hashes. Use for update-manifests.yml and update-manifest-dispatch.yml incidents, including upstream repository/asset renames, rate limits, hash mismatches, and invalid dispatch payloads; use the repository updater within its supported boundaries, delegate manifest repairs, and finish with scoop-verify.
+description: "Triage scheduled or release-dispatch Scoop updates that fail, skip a release, or produce suspect hashes. Use for update-manifests.yml and update-manifest-dispatch.yml incidents, including upstream repository/asset renames, rate limits, hash mismatches, and invalid dispatch payloads; use the repository updater within its supported boundaries, delegate manifest repairs, and finish with scoop-verify."
+# Content-Hash: blake3:47a4412ecf7fa154f87a91c94c2d3fdfb675d26aaad9e39c974c258bf01d4366
+# Source-Hash: blake3:927961d09a579ddc3649a514583e6ea5c63124a176d82b859558275ba6869d8f
 ---
 
 # Triage an automated update
@@ -110,3 +112,12 @@ Report the cause and confidence, evidence/run SHA, selected manifests and partia
 updates, action taken, updater limitations, verification passed/pending/skipped,
 and any approved retry or remaining blocker. Label synthetic/regression-derived
 cases and desk evaluations honestly; they are not Windows installation tests.
+
+
+## Resources
+
+This skill bundles supporting files. Read them on demand when the task calls for them — don't bulk-load.
+
+### References
+
+- [`references/triage-cases.md`](references/triage-cases.md) — Update Triage Evidence

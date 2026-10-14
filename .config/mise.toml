@@ -1,0 +1,31 @@
+[tools]
+"github:Goldziher/ai-rulez" = "5.3.0"
+python = "3.15.0"
+
+[tasks."agents:generate"]
+description = "Regenerate agent instructions and skills from .ai-rulez/"
+run = "python scripts/gen_agents.py"
+
+[tasks."agents:check"]
+description = "Verify generated agent files match .ai-rulez/ (read-only)"
+run = "python scripts/gen_agents.py --check"
+
+[tasks."agents:validate"]
+description = "Lint .ai-rulez/ config and content (skill pointers, links, eval cases)"
+run = "ai-rulez validate"
+
+[tasks."agents:eval"]
+description = "Offline skill-activation signal over eval prompts (retrieval ranker; no model, no cost). Informational, not a merge gate."
+run = "ai-rulez eval run --mode activation --surface retrieval --no-write"
+
+[tasks."test"]
+description = "Run the unit test suite"
+run = "python -m unittest discover -s tests -v"
+
+[tasks."check"]
+description = "Run all local verification"
+run = [
+  { task = "test" },
+  { task = "agents:check" },
+  { task = "agents:validate" },
+]

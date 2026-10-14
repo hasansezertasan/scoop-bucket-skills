@@ -1,6 +1,8 @@
 ---
 name: scoop-verify
 description: "Decide whether a Scoop bucket change is verified and ready - run the read-only pre-PR readiness gate after adding, updating, repairing, or removing a manifest, and report the verdict with the evidence. Use for readiness verdicts and verification reports: noop URL/hash consistency, smoke commands, placeholder hashes, and whether Windows installation evidence is needed. It never edits manifests; that is scoop-fix-manifest's job."
+# Content-Hash: blake3:b0c2048955b929240ead33b4e116d03650c8a9df551cc89344db4844b5869155
+# Source-Hash: blake3:927961d09a579ddc3649a514583e6ea5c63124a176d82b859558275ba6869d8f
 ---
 
 # Verify a Scoop Bucket Change
@@ -107,3 +109,12 @@ Summarize the affected packages, local commands and results, URL/hash/layout and
 noop checks, smoke command/overrides, and Windows evidence (run URL/head SHA or
 local command results). List blockers and intentional skips explicitly. Keep
 `passed`, `pending`, and `skipped` distinct so a maintainer knows what remains.
+
+
+## Resources
+
+This skill bundles supporting files. Read them on demand when the task calls for them — don't bulk-load.
+
+### References
+
+- [`references/verification-cases.md`](references/verification-cases.md) — Verification Evidence

@@ -1,6 +1,8 @@
 ---
-name: scoop-remove-or-deprecate
 description: Remove or deprecate a Scoop manifest when retiring an upstream tool, dropping an installation route, or replacing a package. Establish deletion versus native deprecated-directory behavior, identify exact manifests and any real -pipx sibling, preserve independent alternatives and dependents, regenerate the README catalog, and finish with scoop-verify.
+name: scoop-remove-or-deprecate
+# Content-Hash: blake3:bc1176ab6d84ba30e0e9d8e1022e818a1ae096ae0ad0bed62c5022a85619f832
+# Source-Hash: blake3:927961d09a579ddc3649a514583e6ea5c63124a176d82b859558275ba6869d8f
 ---
 
 # Remove or deprecate a manifest
@@ -123,3 +125,12 @@ Report exact retained/moved/deleted paths, retirement reason, sibling decisions,
 dependent/reference handling, replacement/user guidance, automation consequences,
 verification passed/pending/skipped and remaining blockers. Keep publishing and
 external changes subject to the user's approval.
+
+
+## Resources
+
+This skill bundles supporting files. Read them on demand when the task calls for them — don't bulk-load.
+
+### References
+
+- [`references/lifecycle-cases.md`](references/lifecycle-cases.md) — Lifecycle Evidence
