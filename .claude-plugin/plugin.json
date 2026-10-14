@@ -2,7 +2,15 @@
   "name": "scoop-bucket-skills",
   "version": "0.1.0",
   "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests.",
-  "author": { "name": "hasansezertasan" },
+  "author": {
+    "name": "hasansezertasan"
+  },
   "license": "MIT",
-  "keywords": ["scoop", "bucket", "windows", "manifest"]
+  "keywords": [
+    "scoop",
+    "bucket",
+    "windows",
+    "manifest"
+  ],
+  "skills": "./.claude/skills"
 }

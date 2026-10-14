@@ -18,4 +18,15 @@ Install:
 ```
 
 The skills assume the layout in [CONTRACT.md](CONTRACT.md).
-For other agents, point them at `skills/<name>/SKILL.md`.
+Other agents can read `.agents/skills/<name>/SKILL.md`.
+
+## Development
+
+Skills are authored in `.ai-rulez/`; `.claude/skills/`, `.agents/skills/` and
+`AGENTS.md` are generated and committed.
+
+```sh
+mise install
+mise run agents:generate
+mise run check
+```
