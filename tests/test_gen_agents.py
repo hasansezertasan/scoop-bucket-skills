@@ -129,6 +129,25 @@ class DropUnwantedTest(unittest.TestCase):
                 gen.validate_manifest_rel(evil)
 
 
+class CodexMetadataTest(unittest.TestCase):
+    def test_copies_openai_yaml_and_records_it_in_manifest(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            render(root, OUTPUTS)
+            write(root, ".ai-rulez/skills/demo/agents/openai.yaml", "interface: {}\n")
+            gen.add_codex_metadata(root)
+            rel = ".agents/skills/demo/agents/openai.yaml"
+            self.assertEqual((root / rel).read_text(encoding="utf-8"), "interface: {}\n")
+            self.assertIn(rel, gen.expected_files(root))
+
+    def test_noop_without_metadata(self) -> None:
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            render(root, OUTPUTS)
+            gen.add_codex_metadata(root)
+            self.assertEqual(gen.expected_files(root), {*OUTPUTS, gen.MANIFEST})
+
+
 class CompareTest(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = TemporaryDirectory()
@@ -373,6 +392,14 @@ class SyncTest(unittest.TestCase):
         write(self.repo, extra)
         removed = gen.sync(self.rendered, self.repo)
         self.assertEqual(removed, [])
+        self.assertEqual(gen.compare(self.rendered, self.repo), [])
+
+    def test_recovers_malformed_manifest_entries(self) -> None:
+        write(self.repo, gen.MANIFEST, json.dumps({"version": "1", "files": [None]}))
+        self.assertEqual(
+            gen.compare(self.rendered, self.repo), [f"stale: {gen.MANIFEST}"]
+        )
+        gen.sync(self.rendered, self.repo)
         self.assertEqual(gen.compare(self.rendered, self.repo), [])
 
     def test_recovers_missing_manifest_from_owned_paths(self) -> None:

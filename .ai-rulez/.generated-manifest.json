@@ -5,6 +5,7 @@
     ".agents/skills/scoop-fix-manifest/SKILL.md",
     ".agents/skills/scoop-fix-manifest/references/repair-cases.md",
     ".agents/skills/scoop-remove-or-deprecate/SKILL.md",
+    ".agents/skills/scoop-remove-or-deprecate/agents/openai.yaml",
     ".agents/skills/scoop-remove-or-deprecate/references/lifecycle-cases.md",
     ".agents/skills/scoop-update-triage/SKILL.md",
     ".agents/skills/scoop-update-triage/references/triage-cases.md",

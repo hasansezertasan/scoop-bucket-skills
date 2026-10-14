@@ -92,6 +92,30 @@ def render(source_root: Path, staging: Path) -> None:
         check=True,
     )
     drop_unwanted(staging)
+    add_codex_metadata(staging)
+
+
+def add_codex_metadata(root: Path) -> None:
+    """Publish each skill's ``agents/openai.yaml`` beside its Codex copy.
+
+    ai-rulez copies only SKILL.md and references/, so the OpenAI display
+    metadata would otherwise exist only under ``.ai-rulez/`` and Codex users of
+    ``.agents/skills/`` would lose it. The copies join the manifest so they are
+    owned, checked, and removed like every other output.
+    """
+    added = []
+    for src in sorted((root / CONFIG_DIR / "skills").glob("*/agents/openai.yaml")):
+        rel = f".agents/skills/{src.parent.parent.name}/agents/openai.yaml"
+        dest = root / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(src, dest)
+        added.append(rel)
+    manifest = root / MANIFEST
+    if not added or not manifest.is_file():
+        return
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    data["files"] = sorted({*data.get("files", []), *added})
+    manifest.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def drop_unwanted(root: Path) -> None:
@@ -405,7 +429,7 @@ def sync(rendered: Path, repo: Path) -> list[str]:
     expected = expected_files(rendered)
     try:
         previous = expected_files(repo)
-    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError, AttributeError):
         previous = set()
     removed = sorted((previous & owned_files(repo)) - expected - set(DROPPED))
     removed_set = set(removed)
@@ -509,7 +533,7 @@ def compare(rendered: Path, repo: Path) -> list[str]:
     expected = expected_files(rendered)
     try:
         previous = expected_files(repo)
-    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+    except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError, AttributeError):
         previous = set()
     owned = owned_files(repo)
     problems = []
