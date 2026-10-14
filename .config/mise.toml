@@ -3,16 +3,22 @@
 python = "3.15.0"
 
 [tasks."agents:generate"]
-description = "Regenerate agent instructions and skills from .ai-rulez/"
-run = "python scripts/gen_agents.py"
+description = "Regenerate AGENTS.md, root skills/ and plugin manifests from .ai-rulez/"
+run = [
+  "ai-rulez generate --no-self-mcp --strict-config",
+  "ai-rulez generate --plugin",
+]
 
 [tasks."agents:check"]
-description = "Verify generated agent files match .ai-rulez/ (read-only)"
-run = "python scripts/gen_agents.py --check"
+description = "Verify generated files match .ai-rulez/ (read-only)"
+run = [
+  "ai-rulez generate --check --no-self-mcp --strict-config",
+  "ai-rulez verify --plugin",
+]
 
 [tasks."agents:validate"]
 description = "Lint .ai-rulez/ config and content (skill pointers, links, eval cases)"
-run = "ai-rulez validate"
+run = "ai-rulez validate --strict"
 
 [tasks."agents:eval"]
 description = "Offline skill-activation signal over eval prompts (retrieval ranker; no model, no cost). Informational, not a merge gate."

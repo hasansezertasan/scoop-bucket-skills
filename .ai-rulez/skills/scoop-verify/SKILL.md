@@ -11,6 +11,9 @@ x-ai-rulez:
 
 # Verify a Scoop Bucket Change
 
+Read the [template contract](../../references/contract.md) for the task names and paths
+this skill relies on.
+
 Use this gate after manifest work, including `scoop-add`, and before reporting a
 change ready for review. Read the changed manifests and relevant workflow steps;
 the local gate alone does not prove that a package installs on Windows.
@@ -109,6 +112,7 @@ pushing, or opening a PR follows the user's approval rules.
 
 ## Report
 
+Use the [verification report](references/verification-report.md) as a guide.
 Summarize the affected packages, local commands and results, URL/hash/layout and
 noop checks, smoke command/overrides, and Windows evidence (run URL/head SHA or
 local command results). List blockers and intentional skips explicitly. Keep

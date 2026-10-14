@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "checkver-drift",
+      "description": "Reproduce first, then repair version discovery and keep concrete and autoupdate entries aligned.",
+      "prompt": "The widget manifest's checkver stopped matching after upstream changed its release page, and the update workflow reports no version found. Explain how to repair it. This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Reproduces and classifies the failure before editing."
+        },
+        {
+          "text": "Repairs checkver and keeps the concrete URL/hash and the autoupdate template aligned."
+        },
+        {
+          "text": "Checks the real download rather than assuming the new URL pattern."
+        },
+        {
+          "text": "Finishes by invoking scoop-verify for the readiness verdict."
+        }
+      ],
+      "tags": [
+        "scoop-fix-manifest",
+        "checkver",
+        "desk-exercise"
+      ]
+    },
+    {
+      "id": "zero-hash-placeholder",
+      "description": "Handle all-zero hashes as placeholders, not as a verified state.",
+      "prompt": "A binary manifest has an all-zero architecture hash and a version of 2.0.0. Is it fine to leave as is, and how do I fix it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Recognizes the all-zero hash as a placeholder despite the nonzero version."
+        },
+        {
+          "text": "Replaces it only from the real downloaded asset and keeps autoupdate hash handling consistent."
+        },
+        {
+          "text": "Does not edit .gitignore or other template-managed files by hand."
+        },
+        {
+          "text": "Hands off to scoop-verify and marks Windows evidence pending when unavailable."
+        }
+      ],
+      "tags": [
+        "scoop-fix-manifest",
+        "placeholder",
+        "desk-exercise"
+      ]
+    }
+  ]
+}

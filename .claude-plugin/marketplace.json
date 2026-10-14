@@ -1,11 +1,27 @@
 {
   "name": "scoop-bucket-skills",
-  "owner": { "name": "hasansezertasan" },
+  "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests.",
+  "owner": {
+    "name": "Hasan Sezer Tasan",
+    "url": "https://github.com/hasansezertasan"
+  },
   "plugins": [
     {
       "name": "scoop-bucket-skills",
+      "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests.",
+      "version": "0.1.0",
       "source": "./",
-      "description": "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests."
+      "category": "Productivity",
+      "keywords": [
+        "scoop",
+        "bucket",
+        "windows",
+        "manifest"
+      ],
+      "author": {
+        "name": "Hasan Sezer Tasan",
+        "url": "https://github.com/hasansezertasan"
+      }
     }
   ]
 }

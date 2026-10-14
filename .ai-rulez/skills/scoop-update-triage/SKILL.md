@@ -11,6 +11,9 @@ x-ai-rulez:
 
 # Triage an automated update
 
+Read the [template contract](../../references/contract.md) for the task names and paths
+this skill relies on.
+
 ## Establish the failing stage
 
 Read `AGENTS.md`, both update workflows, `scripts/update_manifests.py`, and
@@ -112,6 +115,7 @@ including README regeneration and any required Windows install evidence.
 For an unresolved transient or rejected payload with no manifest change, report
 verification as pending or not applicable rather than claiming a repaired install.
 
+Use the [triage report](references/triage-report.md) as a guide.
 Report the cause and confidence, evidence/run SHA, selected manifests and partial
 updates, action taken, updater limitations, verification passed/pending/skipped,
 and any approved retry or remaining blocker. Label synthetic/regression-derived

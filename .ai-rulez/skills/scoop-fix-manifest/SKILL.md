@@ -11,6 +11,9 @@ x-ai-rulez:
 
 # Repair a Scoop Manifest
 
+Read the [template contract](../../references/contract.md) for the task names and paths
+this skill relies on.
+
 Repair the affected package family, including relevant `-pipx` siblings, without
 re-scaffolding over curated metadata. Derive bucket identity from `origin` or an
 explicit override. Read the manifest, `scripts/update_manifests.py`, and the

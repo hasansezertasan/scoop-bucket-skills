@@ -11,6 +11,9 @@ x-ai-rulez:
 
 # Add a Scoop Manifest
 
+Read the [template contract](../../references/contract.md) for the task names and paths
+this skill relies on.
+
 Use `scripts/add_manifest.py`; do not create a manifest from scratch. First choose
 the route from what upstream publishes:
 
