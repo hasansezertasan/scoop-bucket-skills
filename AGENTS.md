@@ -29,7 +29,8 @@ interface live in `.ai-rulez/config.toml`; it has no literal version, which
 - Skills read the bucket's scripts for exact CLI options instead of hardcoding
   flags; keep it that way.
 - Skills never edit `.gitignore` or other template-managed files by hand.
-- Bucket setup is out of scope until the Copier template exists.
+- Bucket setup renders the Copier template (`scoop-bucket-setup`); it never
+  hand-writes template-managed files.
 - Maintainer governance stays in `AGENTS.md`, `CONTRIBUTING.md` and `docs/`;
   do not inject it into distributed skills.
 - Keep host-loaded paths (`.mcp.json`, `hooks/`, `agents/`, `commands/`) out of

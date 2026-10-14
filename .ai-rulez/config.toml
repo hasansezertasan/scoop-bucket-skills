@@ -60,7 +60,7 @@ AR402 = "off"
 [plugin]
 name = "scoop-bucket-skills"
 version_from = "pyproject.toml"
-description = "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests."
+description = "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests."
 repository = "https://github.com/hasansezertasan/scoop-bucket-skills"
 keywords = ["scoop", "bucket", "windows", "manifest"]
 runtimes = ["claude", "codex"]
@@ -81,7 +81,7 @@ short_description = "Operate a Scoop bucket's manifests"
 category = "Development"
 capabilities = ["Read", "Write"]
 default_prompt = ["Verify this Scoop bucket change before I open a PR."]
-long_description = "Skills for operating a Scoop bucket: add, fix, triage, remove, and verify manifests."
+long_description = "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests."
 developer_name = "Hasan Sezer Tasan"
 
 # Single-plugin catalogs point at the repository root ("./").
