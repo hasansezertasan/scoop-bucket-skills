@@ -21,7 +21,7 @@ boilerplate failure, not proof of a template, token or shim incident.
 | Rendered answers record used by `copier update` | `template/.copier-answers.yml.jinja` |
 | What the rendered setup checklist says | `template/README.md.jinja`, Setup / Install packages / Add a manifest / Automated updates |
 | Token names, producer versus bucket responsibilities | `template/README.md.jinja`, Automated updates; `template/.github/workflows/update-manifests.yml`, `update` job; `update-manifest-dispatch.yml`, Create Pull Request / Report failure |
-| CLI → environment → remote precedence | the `scoop-add` skill's `scripts/add_manifest.py` (shim CLI and `main`) and `scripts/bucket_repository.py` (`resolve` / `from_remote`); `tests/test_bucket_repository.py`. The template still ships a copy at `template/scripts/` until it drops it |
+| CLI → environment → remote precedence | the `scoop-add` skill's `scripts/add_manifest.py` (shim CLI and `main`) and `scripts/bucket_repository.py` (`resolve` / `from_remote`); `tests/test_bucket_repository.py`. The template no longer ships a copy (removed in its PR 28) |
 | Local LF-normalized hash and raw repository/ref URL | the `scoop-add` skill's `scripts/add_manifest.py`, `noop_source`; `template/.gitattributes`; `tests/test_add_manifest.py` |
 | API-only authorization and redirect stripping | the `scoop-add` skill's `scripts/url_fetch.py`; `tests/test_url_fetch.py` |
 | First-manifest scaffolder and verification ownership | the `scoop-add` and `scoop-verify` skills |
