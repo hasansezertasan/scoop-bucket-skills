@@ -394,12 +394,15 @@ def add_binary(args: argparse.Namespace) -> None:
         version, sha = _PLACEHOLDER_VERSION, _PLACEHOLDER_SHA
         concrete_url = (f"https://github.com/{owner}/{repo}/releases/download/"
                         f"v{version}/{artifact}")
+        # A filename that carries the placeholder version must follow the release.
+        autoupdate_artifact = (templatize(artifact, version)
+                               if version in artifact else artifact)
         autoupdate_url = (f"https://github.com/{owner}/{repo}/releases/download/"
-                          f"v$version/{artifact}")
+                          f"v$version/{autoupdate_artifact}")
         extract_dir, exe, hint = args.extract_dir, args.bin, ""
         print("==> Seeding placeholder manifest. VERIFY these guessed conventions "
               "against the first real release:\n"
-              f"      tag: v$version   artifact: {artifact}\n"
+              f"      tag: v$version   artifact: {autoupdate_artifact}\n"
               "    update_manifests.py refreshes only version + hash from this URL; "
               "it can't fix a wrong tag/filename pattern.", file=sys.stderr)
     else:

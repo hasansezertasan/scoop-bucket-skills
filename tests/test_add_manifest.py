@@ -540,6 +540,35 @@ class AddBinaryTest(unittest.TestCase):
         self.assertEqual(written["data"]["version"], "0.0.0")
         self.assertEqual(written["data"]["architecture"]["64bit"]["hash"], "0" * 64)
 
+    def test_seed_templatizes_versioned_artifact(self) -> None:
+        meta = {"html_url": "https://github.com/o/r", "description": "tool"}
+        args = argparse.Namespace(
+            repo="o/r", name="tool", seed=True, artifact="widget-0.0.0.zip",
+            extract_dir=None, bin="tool.exe",
+        )
+        written = {}
+
+        def fake_write(name: str, data: dict) -> Path:
+            written["data"] = data
+            return Path(f"bucket/{name}.json")
+
+        with (
+            mock.patch.object(am, "fetch_json", return_value=meta),
+            mock.patch.object(am, "_write_manifest", side_effect=fake_write),
+            mock.patch("sys.stdout", io.StringIO()),
+            mock.patch("sys.stderr", io.StringIO()),
+        ):
+            am.add_binary(args)
+
+        self.assertEqual(
+            written["data"]["architecture"]["64bit"]["url"],
+            "https://github.com/o/r/releases/download/v0.0.0/widget-0.0.0.zip",
+        )
+        self.assertEqual(
+            written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
+            "https://github.com/o/r/releases/download/v$version/widget-$version.zip",
+        )
+
     def test_repo_not_found_exits_cleanly(self) -> None:
         err = urllib.error.HTTPError("u", 404, "Not Found", {}, None)  # type: ignore[arg-type]
         args = argparse.Namespace(
