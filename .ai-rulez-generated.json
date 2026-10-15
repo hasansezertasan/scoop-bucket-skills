@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:c00d9ec2858d74507de9186bcc2778f056ef24e84f3464f7fbd6f2a21bd2aac7",
+  "source_hash": "blake3:085094a56b2ccf0ed9dc49043ddc5a3623dfd9d5a28c56949a28b9a6ae8d8ee5",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -43,7 +43,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/SKILL.md": {
-      "content_hash": "blake3:e69e68c16d6c8beb78570eaf93384cd16accf3f016346ab84117a5540987bfc1",
+      "content_hash": "blake3:0250e39969b05bc15bf42d1f4635dc52ffc56e82b9251d4d30626d6bb2893a36",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/agents/openai.yaml": {
