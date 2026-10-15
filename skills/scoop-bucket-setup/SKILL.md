@@ -1,5 +1,5 @@
 ---
-description: Set up a new Scoop bucket by rendering bucket-template with Copier, then configure repository identity, Actions settings, update credentials and shim noop publication, and hand the first manifest to scoop-add and scoop-verify. Use for new-bucket bootstrap and for template questions about copier copy or update, WORKFLOW_TOKEN versus the unused SCOOP_BUCKET_TOKEN, and why a fresh bucket's shim manifests are not installable yet.
+description: Set up a new Scoop bucket by rendering copier-scoop-bucket with Copier, then configure repository identity, Actions settings, update credentials and shim noop publication, and hand the first manifest to scoop-add and scoop-verify. Use for new-bucket bootstrap and for template questions about copier copy or update, WORKFLOW_TOKEN versus the unused SCOOP_BUCKET_TOKEN, and why a fresh bucket's shim manifests are not installable yet.
 name: scoop-bucket-setup
 ---
 
@@ -37,7 +37,7 @@ question names and defaults. Pin the template version with `--vcs-ref` when the
 user asks for a specific one.
 
 ```sh
-uvx copier@9.18.2 copy gh:hasansezertasan/bucket-template <directory>
+uvx copier@9.18.2 copy gh:hasansezertasan/copier-scoop-bucket <directory>
 ```
 
 Copier renders files only. Creating the GitHub repository, `git init`, the

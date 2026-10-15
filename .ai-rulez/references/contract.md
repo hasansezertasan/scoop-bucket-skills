@@ -1,12 +1,12 @@
 # Template contract
 
 These skills operate on a Scoop bucket made from
-[`bucket-template`](https://github.com/hasansezertasan/bucket-template). They
+[`copier-scoop-bucket`](https://github.com/hasansezertasan/copier-scoop-bucket). They
 read the bucket's own scripts for exact CLI options, but rely on the names and
 locations below. A template release that changes any of them must bump the
 minimum template version recorded here.
 
-Minimum template version: `bucket-template` commit `638b51a` (the Copier
+Minimum template version: `copier-scoop-bucket` commit `638b51a` (the Copier
 conversion). It has no tagged release yet; replace this with the first tag.
 
 ## mise tasks

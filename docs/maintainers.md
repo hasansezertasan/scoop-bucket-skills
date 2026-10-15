@@ -1,7 +1,7 @@
 # Operating a Scoop bucket with these skills
 
 The skills assume a bucket made from
-[`bucket-template`](https://github.com/hasansezertasan/bucket-template) and the
+[`copier-scoop-bucket`](https://github.com/hasansezertasan/copier-scoop-bucket) and the
 layout in the [template contract](../.ai-rulez/references/contract.md). Provide
 the bucket checkout and a concrete outcome.
 
