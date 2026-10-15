@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:8da6116aef828d301c97b446314897762d91e620ae7ab3c638bcac290841a572",
+  "source_hash": "blake3:3a49840ac7b43066339fef5495e98d4b79a4f9dd2c49b1f939a08c5e8d45ee09",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -115,7 +115,7 @@
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/triage-cases.md": {
-      "content_hash": "blake3:b560e23db1266e0a94d3028af8f6faad73a61abcad62fdb04d5b82a1eb70adcc",
+      "content_hash": "blake3:959945f2466ab9945021a1300ae2b7b15c6cdd8608f742996912716a7ebb4f33",
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/triage-report.md": {
@@ -135,7 +135,7 @@
       "mode": "0644"
     },
     "skills/scoop-verify/references/verification-cases.md": {
-      "content_hash": "blake3:3b0d4ee8d386300ce1f81c11e99d3c879793477707df2643f22b42bf8a11a707",
+      "content_hash": "blake3:9c9a4b18c2eaf87ae1ec6996bb2a8dde07f312b1fddb75ae24d2c121119161c8",
       "mode": "0644"
     },
     "skills/scoop-verify/references/verification-report.md": {
