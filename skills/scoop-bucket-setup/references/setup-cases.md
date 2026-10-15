@@ -11,8 +11,9 @@ guidance (`fcc017c`, PR 30). Every locator below was rechecked at it. A render o
 renders before PR 30 still ask for read/write default permissions; later renders
 do neither. Locators are paths in that repository; files under `template/` land
 at the same path without the prefix in a rendered bucket. `bucket/` and
-`deprecated/` contain only `.gitkeep`, and the template has no tagged release
-yet. The cases are synthetic desk scenarios grounded in the
+`deprecated/` contain only `.gitkeep`. The template has no tagged release at
+this revision; the contract's 0.1.0 floor names its planned first release and
+is written ahead of the tag. The cases are synthetic desk scenarios grounded in the
 implementation, not observed failed installations or Windows runtime tests.
 
 Read the existing verification, repair, triage and lifecycle references for their
