@@ -11,9 +11,13 @@ the Copier conversion.
 
 Check the bucket against it before relying on the layout below: read `_commit`
 in the bucket's `.copier-answers.yml`. A tag at or after the minimum (`v0.1.0`,
-or a describe form such as `v0.1.0-3-gabc1234`) passes. A bare hash or an older
-tag predates the contract, so say so and propose `copier update` with the user's
-approval; do not guess at the old layout.
+or a describe form such as `v0.1.0-3-gabc1234`) passes. An older tag predates the
+contract, so say so and propose `copier update` with the user's approval; do not
+guess at the old layout. A bare hash is indeterminate: it can be a pre-release
+render or an untagged ref at or after the minimum. Ask the user which template
+revision it was, or check in a template clone that it descends from `v0.1.0`
+(`git merge-base --is-ancestor v0.1.0 <hash>`), and propose `copier update` only
+when it does not.
 
 ## mise tasks
 
