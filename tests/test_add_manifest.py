@@ -94,6 +94,9 @@ class HelperTest(unittest.TestCase):
             self.assertEqual(
                 am.templatize("tool-win32-v3.zip", "3"), "tool-win32-v$version.zip"
             )
+            self.assertEqual(
+                am.templatize("tool-armv3-v3.zip", "3"), "tool-armv3-v$version.zip"
+            )
             self.assertEqual(am.templatize("x64-1.2.3.1.zip", "1.2.3"), "x64-1.2.3.1.zip")
         self.assertIn("longer number", err.getvalue())
 
@@ -689,7 +692,7 @@ class AddBinaryTest(unittest.TestCase):
             written["data"]["architecture"]["64bit"]["url"],
             "https://github.com/o/r/releases/download/release/v1.0.0/tool.zip",
         )
-        self.assertIn("schema", err.getvalue())
+        self.assertIn("checkver", err.getvalue())
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
             "https://github.com/o/r/releases/download/$version/tool.zip",

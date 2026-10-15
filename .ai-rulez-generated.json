@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:5c5a1305aebde69b5fd9778325753a5341f5656257998e9cbf904dd307671677",
+  "source_hash": "blake3:b943475fd89055f732069e32f514c2356e5d4e0577efe7e5d8448efe40d4b604",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -31,7 +31,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/scripts/add_manifest.py": {
-      "content_hash": "blake3:2b0cb5dc3e2b11cb9b46467aa82d85f24ea4bf64b09c7216c469578bc32674a8",
+      "content_hash": "blake3:d568a6f362c005f4bf281ae09f08b115220a7930b04ee48d80701212c1fb1f0f",
       "mode": "0755"
     },
     "skills/scoop-add/scripts/bucket_repository.py": {
@@ -83,7 +83,7 @@
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/SKILL.md": {
-      "content_hash": "blake3:dc9ef4865158d51880596b69883f21bce31d63f492ac6a0048bf36b6c12d52b0",
+      "content_hash": "blake3:adb6d4c134c2280a53c41edf9ff50aeab808f544032abe217e4fc0a80d2c8799",
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/agents/openai.yaml": {

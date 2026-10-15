@@ -10,10 +10,12 @@ this skill relies on.
 
 ## Establish the intended outcome
 
-Read `AGENTS.md`, the selected manifests, the `scoop-add` skill's
-`scripts/add_manifest.py`, the bucket's `scripts/update_manifests.py`, `scripts/gen_readme_packages.py`, and applicable
+Read `AGENTS.md`, the selected manifests, the bucket's
+`scripts/update_manifests.py`, `scripts/gen_readme_packages.py`, and applicable
 workflows before changing files. Read [lifecycle evidence](references/lifecycle-cases.md)
-for repository boundaries and native Scoop behavior. Derive repository identity
+for repository boundaries, native Scoop behavior, and the scaffolder's naming
+(`-pipx` siblings) and collision rules; this skill does not need `scoop-add`
+installed. Derive repository identity
 from the remote, Actions context, or an explicit override; preserve local work.
 
 Confirm the exact active manifest path/token, upstream identity, reason, affected

@@ -311,9 +311,11 @@ def templatize(text: str, version: str) -> str:
                   "URL won't auto-update on release bumps — verify the manifest",
                   file=sys.stderr)
             return text
-    # Match the version as a whole number, not inside a longer one, so a short
-    # version such as "3" leaves "win32" or "x64" alone.
-    templated = re.sub(rf"(?<!\d){re.escape(target)}(?!\.?\d)", "$version", text)
+    # Match the version as a whole token, not inside a longer one, so a short
+    # version such as "3" leaves "win32", "armv3" and "x64" alone. A dotted
+    # version is distinctive enough to follow only the digit rule.
+    before = r"(?<!\d)" if "." in target else r"(?:(?<![0-9A-Za-z])|(?<=(?<![0-9A-Za-z])[vV]))"
+    templated = re.sub(rf"{before}{re.escape(target)}(?!\.?\d)", "$version", text)
     if templated == text:
         print(f"warning: version {version!r} appears in {text!r} only inside a longer "
               "number; that part of the URL won't auto-update on release bumps — "
@@ -390,10 +392,12 @@ def add_binary(args: argparse.Namespace) -> None:
         tag = release["tag_name"]
         # Scoop's github checkver drops an optional leading v or V from the tag.
         version = tag[1:] if re.fullmatch(r"[vV]\d.*", tag) else tag
-        if "/" in version:
-            print(f"warning: release tag {tag!r} puts '/' in the version, which Scoop's "
-                  "manifest schema rejects; add a checkver regex that extracts a "
-                  "schema-safe version before merging", file=sys.stderr)
+        if not re.fullmatch(r"[\d.-]+", version):
+            print(f"warning: release tag {tag!r} gives version {version!r}, which "
+                  "Scoop's github checkver (an optional v or V, then digits, dots and "
+                  "dashes) cannot reproduce and, with '/', its manifest schema "
+                  "rejects; add a checkver regex and keep any literal prefix in the "
+                  "autoupdate URL before merging", file=sys.stderr)
         asset = select_zip(release.get("assets", []), args.artifact)
         artifact = asset["name"]
         tmp = download_zip(asset["browser_download_url"])
