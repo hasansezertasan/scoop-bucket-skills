@@ -20,9 +20,12 @@ evidence from the relevant guide.
   stable result, and a first-trial rerun showed the judge is noisy.
   `scoop-remove-or-deprecate` failed both cases in two runs. A transcript run
   shows correct answers, including for `removal-needs-no-windows-install`,
-  which the judge still marks failed, so the judge or rubric is the suspect, not
-  the skill; this is unconfirmed because the runner reports only "outcome
-  checks failed". `scoop-add` and `scoop-bucket-setup` were rerun with the new prompts
+  which the haiku judge marks failed. With `--judge-model sonnet` that case
+  passed three runs and `deprecate-with-pipx-sibling` still failed, although a
+  kept answer satisfies all four of its rubric items on a manual read. The judge
+  is the suspect, not the skill; this is unconfirmed because the runner reports
+  only "outcome checks failed" and `--grader builtin` needs a persistent `[llm]`
+  model and `allow_network` in the user config, which was not set up. `scoop-add` and `scoop-bucket-setup` were rerun with the new prompts
   at three runs per case (about $2.20) and passed all five cases. Also open: in the runner's temporary plugin copy the skill's
   `../../references/contract.md` link does not resolve (the generated root
   skills link `references/contract.md`, which exists), so the contract was never
@@ -30,9 +33,10 @@ evidence from the relevant guide.
   flag ai-rulez sets and the run errors, which then counts as the full
   `--max-cost`. Use `--runner-arg --keep-temp` to keep transcripts. These
   results are not evidence that any skill works on a real bucket.
-- **Host skill use.** [Host support](host-support.md) records that the plugin
-  installs on Claude Code and Codex (macOS). No skill has been invoked on
-  either host after a plugin install, and OpenCode, pi and other agents are
+- **Host skill use.** [Host support](host-support.md) records the plugin
+  installing on Claude Code and Codex (macOS) and one skill answering a desk
+  prompt on each. That is one prompt and one run per host: no pass rate, and
+  no skill has run against a real bucket. OpenCode, pi and other agents are
   not evaluated.
 - **Windows installs.** No skill run has been checked against a real Windows
   install of a published manifest; the examples are regression-derived. This
