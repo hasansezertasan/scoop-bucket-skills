@@ -6,8 +6,9 @@ x-ai-rulez:
   id: scoop-bucket-skills
 ---
 
-This repository is a Claude Code plugin (and its marketplace) holding skills
-for operating a Scoop bucket made from
+This repository is a skills repository (root `skills/`) that also installs as a
+Claude Code or Codex plugin, and is its own marketplace. It holds skills for
+operating a Scoop bucket made from
 [`copier-scoop-bucket`](https://github.com/hasansezertasan/copier-scoop-bucket).
 
 #### Agent Instructions

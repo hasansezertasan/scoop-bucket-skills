@@ -1,6 +1,6 @@
 # Host support
 
-Five skills are generated into root `skills/` from `.ai-rulez/`. Claude Code
+The skills are generated into root `skills/` from `.ai-rulez/`. Claude Code
 and Codex have catalogs that install the repository root (`./`). OpenCode
 does not scan root `skills/`; the root `opencode.json` points it there.
 
