@@ -4,7 +4,7 @@
     {
       "id": "shim-vs-binary-route",
       "description": "Choose the route from what upstream publishes and use the scaffolder, not a hand-written manifest.",
-      "prompt": "I want to add the tool 'widget' to this bucket. Upstream publishes it on PyPI as a CLI and also ships a prebuilt Windows zip on GitHub releases (owner/widget). Which commands do I run? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "I want to add the tool 'widget' to this bucket. Upstream publishes it on PyPI as a CLI and also ships a prebuilt Windows zip on GitHub releases (owner/widget). Which commands do I run? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {
@@ -29,7 +29,7 @@
     {
       "id": "prerelease-seed",
       "description": "Use --seed with --bin before the first release and flag the assumptions for later verification.",
-      "prompt": "The upstream project has no GitHub release yet but I know the binary name will be widget.exe in a zip. How do I add it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "The upstream project has no GitHub release yet but I know the binary name will be widget.exe in a zip. How do I add it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {

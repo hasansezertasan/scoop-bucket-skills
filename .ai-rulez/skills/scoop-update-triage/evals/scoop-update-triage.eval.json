@@ -4,11 +4,11 @@
     {
       "id": "partial-update-failure",
       "description": "Inspect per-manifest errors and the partial diff, not just the final job status.",
-      "prompt": "The scheduled update-manifests run failed at its final status step, but a PR with several updated manifests was created. How do I triage it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "The scheduled update-manifests run failed at its final status step, but a PR with several updated manifests was created. How do I triage it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {
-          "text": "Separates the failing stage and reads the per-manifest errors and partial diff, not only the job's final error."
+          "text": "Separates the failing stage and directs reading the per-manifest errors and partial diff, not only the job's final error."
         },
         {
           "text": "Does not discard the successful changes or treat the generated PR as proof every manifest updated."
@@ -29,7 +29,7 @@
     {
       "id": "gitignore-managed-drift",
       "description": "A managed .gitignore failure is template drift, not a manifest incident.",
-      "prompt": "The update workflow failed on a check about .gitignore, not a manifest. What should I do? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "The update workflow failed on a check about .gitignore, not a manifest. What should I do? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {
