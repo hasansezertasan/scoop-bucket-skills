@@ -1,6 +1,9 @@
 [tools]
 "github:Goldziher/ai-rulez" = "5.3.0"
 python = "3.15.0"
+# Not used by tasks here: the version Renovate tracks. The scoop-bucket-setup
+# skill ships its own copy of this pin; tests/test_copier_pin.py keeps them equal.
+"pipx:copier" = "9.18.2"
 
 [tasks."agents:generate"]
 description = "Regenerate AGENTS.md, root skills/ and plugin manifests from .ai-rulez/"

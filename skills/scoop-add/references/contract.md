@@ -9,6 +9,12 @@ minimum template version recorded here.
 Minimum template version: `copier-scoop-bucket` 0.1.0, the first release after
 the Copier conversion.
 
+Check the bucket against it before relying on the layout below: read `_commit`
+in the bucket's `.copier-answers.yml`. A tag at or after the minimum (`v0.1.0`,
+or a describe form such as `v0.1.0-3-gabc1234`) passes. A bare hash or an older
+tag predates the contract, so say so and propose `copier update` with the user's
+approval; do not guess at the old layout.
+
 ## mise tasks
 
 | Task | Used by |

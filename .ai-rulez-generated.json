@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:5c97b4fbcce34de255c593ae2ab7eb0d5295dba1f9ba286d52e7b46a2d5fef9b",
+  "source_hash": "blake3:ab182acedcddb68c26601d8225335e58e00d26f18c073581a37995140857fc38",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -27,7 +27,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-add/scripts/add_manifest.py": {
@@ -55,7 +55,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-cases.md": {
@@ -75,7 +75,7 @@
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/references/repair-cases.md": {
@@ -95,7 +95,7 @@
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/references/lifecycle-cases.md": {
@@ -111,7 +111,7 @@
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/triage-cases.md": {
@@ -131,7 +131,7 @@
       "mode": "0644"
     },
     "skills/scoop-verify/references/contract.md": {
-      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
+      "content_hash": "blake3:f82628c4ad67392100464dba357f0d821c72e60d5555c6996b3eed3b91c7092d",
       "mode": "0644"
     },
     "skills/scoop-verify/references/verification-cases.md": {
