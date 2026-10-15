@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:5c97b4fbcce34de255c593ae2ab7eb0d5295dba1f9ba286d52e7b46a2d5fef9b",
+  "source_hash": "blake3:958df1f7451dc976b63bf967855c0ab89e058369e38885553f1ac90aeef67c8c",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -59,7 +59,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-cases.md": {
-      "content_hash": "blake3:f0549da93070a3acfe6fdf0e7881342878314dbad072dac7fbb2fa6821effeac",
+      "content_hash": "blake3:b6f221aeb5a93ec44b1d40774982b198e464c7ed0243bb1eb7f30ff2172bcde8",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-report.md": {

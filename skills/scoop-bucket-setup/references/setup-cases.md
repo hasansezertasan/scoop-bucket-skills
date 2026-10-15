@@ -3,17 +3,19 @@
 ## Provenance
 
 Inspected `copier-scoop-bucket` (named `bucket-template` until 2026-10-15) at
-`fcc017c` (2026-10-15). That revision includes the
-Copier conversion (`638b51a`, PR 27), the move of the manifest scaffolder out to
-the `scoop-add` skill (`7a069ee`, PR 28) and the read-only default-permissions
-guidance (`fcc017c`, PR 30). Every locator below was rechecked at it. A render of
-`638b51a` still ships the scaffolder scripts and the `add-manifest` mise task, and
-renders before PR 30 still ask for read/write default permissions; later renders
-do neither. Locators are paths in that repository; files under `template/` land
-at the same path without the prefix in a rendered bucket. `bucket/` and
-`deprecated/` contain only `.gitkeep`. The template has no tagged release at
-this revision; the contract's 0.1.0 floor names its planned first release and
-is written ahead of the tag. The cases are synthetic desk scenarios grounded in the
+`v0.1.0` (`623daee`, 2026-10-15), its first release, which is the contract's
+minimum template version. That release includes the Copier conversion
+(`638b51a`, PR 27), the move of the manifest scaffolder out to the `scoop-add`
+skill (`7a069ee`, PR 28) and the read-only default-permissions guidance
+(`fcc017c`, PR 30). Every locator below was rechecked at `fcc017c`; the changes
+from there to `v0.1.0` are release-please tooling, README and `template/AGENTS.md`
+wording, and a `release-please--` branch-name allowance, none of which touch a
+contract path, task or workflow name. A render of `638b51a` still ships the
+scaffolder scripts and the `add-manifest` mise task, and renders before PR 30
+still ask for read/write default permissions; later renders do neither. Locators
+are paths in that repository; files under `template/` land at the same path
+without the prefix in a rendered bucket. `bucket/` and `deprecated/` contain only
+`.gitkeep`. The cases are synthetic desk scenarios grounded in the
 implementation, not observed failed installations or Windows runtime tests.
 
 Read the existing verification, repair, triage and lifecycle references for their
