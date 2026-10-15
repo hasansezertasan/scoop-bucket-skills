@@ -406,14 +406,15 @@ def add_binary(args: argparse.Namespace) -> None:
                          "use --seed to scaffold a placeholder for the first release")
             raise
         tag = release["tag_name"]
-        # Scoop's github checkver drops an optional leading v or V from the tag.
-        version = tag[1:] if re.fullmatch(r"[vV]\d.*", tag) else tag
+        # Strip only a lowercase v, as the bucket's scripts/update_manifests.py does,
+        # so the stored version and the updater's agree on every bump.
+        version = tag[1:] if re.fullmatch(r"v\d.*", tag) else tag
         if not re.fullmatch(r"[\d.-]+", version):
             print(f"warning: release tag {tag!r} gives version {version!r}, which "
                   "Scoop's github checkver (an optional v or V, then digits, dots and "
-                  "dashes) cannot reproduce and, with '/', its manifest schema "
-                  "rejects; add a checkver regex and keep any literal prefix in the "
-                  "autoupdate URL before merging", file=sys.stderr)
+                  "dashes) cannot reproduce, and the bucket's updater strips only a "
+                  "lowercase v; add a checkver regex and keep any literal prefix in "
+                  "the autoupdate URL before merging", file=sys.stderr)
         asset = select_zip(release.get("assets", []), args.artifact)
         artifact = asset["name"]
         warn_if_not_x64(artifact)

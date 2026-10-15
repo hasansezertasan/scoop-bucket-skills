@@ -708,7 +708,7 @@ class AddBinaryTest(unittest.TestCase):
             "https://github.com/o/r/releases/download/$version/tool.zip",
         )
 
-    def test_add_binary_keeps_uppercase_tag_prefix_literal(self) -> None:
+    def test_add_binary_leaves_uppercase_tag_whole_and_warns(self) -> None:
         meta = {"html_url": "https://github.com/o/r", "description": "tool"}
         release = {
             "tag_name": "V1.2.3",
@@ -737,15 +737,16 @@ class AddBinaryTest(unittest.TestCase):
             mock.patch.object(am, "_write_manifest", side_effect=fake_write),
             mock.patch("os.unlink"),
             mock.patch("sys.stdout"),
-            mock.patch("sys.stderr"),
+            mock.patch("sys.stderr", new_callable=io.StringIO) as err,
         ):
             am.add_binary(args)
 
-        self.assertEqual(written["data"]["version"], "1.2.3")
+        self.assertEqual(written["data"]["version"], "V1.2.3")
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
-            "https://github.com/o/r/releases/download/V$version/tool.zip",
+            "https://github.com/o/r/releases/download/$version/tool.zip",
         )
+        self.assertIn("lowercase v", err.getvalue())
 
     def test_add_binary_handles_encoded_slashes(self) -> None:
         meta = {"html_url": "https://github.com/o/r", "description": "tool"}
