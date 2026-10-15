@@ -13,14 +13,18 @@ that also installs as a Claude Code or Codex plugin.
 | `scoop-remove-or-deprecate` | retire manifests and handle dependents |
 | `scoop-verify` | read-only pre-PR readiness gate |
 
-Install in Claude Code:
+The quickest way is to give your agent the prompt in
+[docs/installation.md](docs/installation.md), which tells it to pick the best
+install route for itself.
+
+Install in Claude Code yourself:
 
 ```sh
 /plugin marketplace add hasansezertasan/scoop-bucket-skills
 /plugin install scoop-bucket-skills@scoop-bucket-skills
 ```
 
-Install in Codex, from a checkout:
+Install in Codex yourself, from a checkout:
 
 ```sh
 codex plugin marketplace add /absolute/path/to/scoop-bucket-skills
