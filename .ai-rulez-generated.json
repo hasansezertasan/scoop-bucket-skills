@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:8da6116aef828d301c97b446314897762d91e620ae7ab3c638bcac290841a572",
+  "source_hash": "blake3:f2d9dffc8e4e6aac16e3da9426540b5461b9dd01397168f1ad15d7531d701779",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -27,7 +27,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-add/scripts/add_manifest.py": {
@@ -43,7 +43,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/SKILL.md": {
-      "content_hash": "blake3:3344786a30194f633cecd6f2da695bef4963ab6717026d7b43e8245b4f66a83a",
+      "content_hash": "blake3:759ee1d81d3a7896d197074512491e443079ce5470776c2abb61e01728490aee",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/agents/openai.yaml": {
@@ -55,7 +55,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-cases.md": {
@@ -75,7 +75,7 @@
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/references/repair-cases.md": {
@@ -95,7 +95,7 @@
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-remove-or-deprecate/references/lifecycle-cases.md": {
@@ -111,7 +111,7 @@
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-update-triage/references/triage-cases.md": {
@@ -131,7 +131,7 @@
       "mode": "0644"
     },
     "skills/scoop-verify/references/contract.md": {
-      "content_hash": "blake3:0a9cbb354b894050af61dc8c39fcdb49ca5a04a68f2d5920da2a33beeffb38b0",
+      "content_hash": "blake3:aba75e240ab9da48afee8d3a3c95b8345bcc17213c3aea76b83d082e7f848176",
       "mode": "0644"
     },
     "skills/scoop-verify/references/verification-cases.md": {

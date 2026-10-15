@@ -39,8 +39,7 @@ Render into a new directory with Copier; the template is not a GitHub template
 repository, so "Use this template" and `gh repo create --template` do not apply.
 Provide the answers from step 1 with `-d name=value` so the run is
 reproducible, or answer the prompts; `copier.yml` is the source for the
-question names and defaults. Pin the template version with `--vcs-ref` when the
-user asks for a specific one.
+question names and defaults.
 
 ```sh
 uvx copier@9.18.2 copy gh:hasansezertasan/copier-scoop-bucket <directory>
