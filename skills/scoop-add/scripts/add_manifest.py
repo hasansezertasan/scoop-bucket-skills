@@ -382,6 +382,10 @@ def add_binary(args: argparse.Namespace) -> None:
             raise
         tag = release["tag_name"]
         version = tag[1:] if re.fullmatch(r"v\d.*", tag) else tag
+        if "/" in version:
+            print(f"warning: release tag {tag!r} puts '/' in the version, which Scoop's "
+                  "manifest schema rejects; add a checkver regex that extracts a "
+                  "schema-safe version before merging", file=sys.stderr)
         asset = select_zip(release.get("assets", []), args.artifact)
         artifact = asset["name"]
         tmp = download_zip(asset["browser_download_url"])

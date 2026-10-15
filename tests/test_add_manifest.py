@@ -673,7 +673,7 @@ class AddBinaryTest(unittest.TestCase):
             mock.patch.object(am, "_write_manifest", side_effect=fake_write),
             mock.patch("os.unlink"),
             mock.patch("sys.stdout"),
-            mock.patch("sys.stderr"),
+            mock.patch("sys.stderr", new_callable=io.StringIO) as err,
         ):
             am.add_binary(args)
 
@@ -681,6 +681,7 @@ class AddBinaryTest(unittest.TestCase):
             written["data"]["architecture"]["64bit"]["url"],
             "https://github.com/o/r/releases/download/release/v1.0.0/tool.zip",
         )
+        self.assertIn("schema", err.getvalue())
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
             "https://github.com/o/r/releases/download/$version/tool.zip",
