@@ -45,9 +45,9 @@ hashes = "full"
 [mcp]
 self_server = false
 
-# The skills cite files of the bucket they operate on (scripts/add_manifest.py,
+# The skills cite files of the bucket they operate on (scripts/update_manifests.py,
 # scripts/noop.ps1, tests/..., workflows), which this repo deliberately does not
-# ship; CONTRACT.md lists them. AR401 and AR402 would flag every such reference
+# ship; the contract reference lists them. AR401 and AR402 would flag every such reference
 # as a missing path or resource.
 [lint.severity]
 AR401 = "off"
