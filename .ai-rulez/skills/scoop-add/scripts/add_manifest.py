@@ -214,7 +214,12 @@ def select_zip(assets: list[dict], wanted: str | None) -> dict:
     sys.exit(f"error: no .zip asset found; pass --artifact to choose one of: {names}")
 
 
-_NON_X64 = re.compile(r"arm64|aarch64|\barm\b|i[3-6]86|ia32|x86(?![-_]?64)", re.I)
+_NON_X64 = re.compile(
+    r"arm64|aarch(?:32|64)|(?<![a-z0-9])arm(?:v\d\w*)?(?![a-z0-9])"
+    r"|i[3-6]86|ia32|win32|x86(?![-_]?64)",
+    re.I,
+)
+_X64 = re.compile(r"arm64|aarch64|\barm\b|i[3-6]86|ia32|x86(?![-_]?64)", re.I)
 _X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
 
 

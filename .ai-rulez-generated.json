@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:ed443635e8108934f946a23964f750beb95b437cc2b105a341c174a5612ce241",
+  "source_hash": "blake3:d28671b5b26ca2788bde8ad65726f9c0b927782542b407db167c0f140d2235f8",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -31,7 +31,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/scripts/add_manifest.py": {
-      "content_hash": "blake3:7c0d95ef9e6b928655a2611ca187deb86fa8479c2821545b3846d21ad9c5b8a5",
+      "content_hash": "blake3:3345733290439d858474dbbe67cd8a7535ca934901b91b17a3e597307468b514",
       "mode": "0755"
     },
     "skills/scoop-add/scripts/bucket_repository.py": {

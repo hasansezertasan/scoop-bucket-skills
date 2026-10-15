@@ -105,10 +105,16 @@ class HelperTest(unittest.TestCase):
             am.warn_if_not_x64("tool-x86_64-windows.zip")
             am.warn_if_not_x64("tool-windows-amd64.zip")
             am.warn_if_not_x64("tool.zip")
+            am.warn_if_not_x64("tool-win32-x64.zip")
+            am.warn_if_not_x64("charm-windows.zip")
             self.assertEqual(err.getvalue(), "")
             am.warn_if_not_x64("tool-windows-arm64.zip")
             am.warn_if_not_x64("tool-win-x86.zip")
-        self.assertEqual(err.getvalue().count("non-x64"), 2)
+            am.warn_if_not_x64("tool-armv7-windows.zip")
+            am.warn_if_not_x64("tool_armv7_windows.zip")
+            am.warn_if_not_x64("tool-aarch32.zip")
+            am.warn_if_not_x64("tool-win32.zip")
+        self.assertEqual(err.getvalue().count("non-x64"), 6)
 
     def test_templatize_warns_when_absent(self) -> None:
         buf = io.StringIO()
