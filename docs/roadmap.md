@@ -8,16 +8,33 @@ evidence from the relevant guide.
 
 - **Model trials.** The eval cases in each skill's `evals/` are desk exercises
   with rubrics. A first run on 2026-10-15 (`ai-rulez eval run`, `claude-plugin-eval`
-  runner, default model, about $3.90) passed 8 of 14 cases: `scoop-add` 2/2 and
-  `scoop-bucket-setup` 1/3 at three runs per case, then `scoop-fix-manifest`,
-  `scoop-remove-or-deprecate`, `scoop-update-triage` and `scoop-verify` 1/2, 1/2,
-  1/2 and 2/3 at one run per case. The one-run figures are not reliable: a rerun
-  of `scoop-update-triage` passed the case that had failed. The failures are
-  undiagnosed because the runner reports only "outcome checks failed". Next:
-  rerun the four skills at three runs per case (roughly $5), then read the
-  failing cases against their skills. Until then these results are not evidence
-  that any skill works or is broken.
-- **Host rediscovery.** [Host support](host-support.md) lists what is
-  structurally validated; installation on each host is not yet recorded.
+  runner, default model) passed 8 of 14 cases, but most failures were the
+  setup, not the skills: the runner starts every run in an empty directory with
+  no bucket checkout, so cases that said "read the repository's code and
+  workflows" got generic answers or refusals. The prompts now say no checkout
+  is available and ask for the skill's guidance plus the files to inspect; the
+  `scoop-fix-manifest` rubric asks the answer to direct reproducing and
+  checking, not to do it. On a rerun at three runs per case (Claude Code
+  2.1.296, about $3.40 for four skills), `scoop-fix-manifest`,
+  `scoop-update-triage` and `scoop-verify` passed every case. One run is not a
+  stable result, and a first-trial rerun showed the judge is noisy.
+  `scoop-remove-or-deprecate` failed both cases in two runs. A transcript run
+  shows correct answers, including for `removal-needs-no-windows-install`,
+  which the judge still marks failed, so the judge or rubric is the suspect, not
+  the skill; this is unconfirmed because the runner reports only "outcome
+  checks failed". `scoop-add` and `scoop-bucket-setup` were not rerun with the
+  new prompts. Also open: in the runner's temporary plugin copy the skill's
+  `../../references/contract.md` link does not resolve (the generated root
+  skills link `references/contract.md`, which exists), so the contract was never
+  read in these runs. Do not pass `--runner-arg --json`: it collides with the
+  flag ai-rulez sets and the run errors, which then counts as the full
+  `--max-cost`. Use `--runner-arg --keep-temp` to keep transcripts. These
+  results are not evidence that any skill works on a real bucket.
+- **Host skill use.** [Host support](host-support.md) records that the plugin
+  installs on Claude Code and Codex (macOS). No skill has been invoked on
+  either host after a plugin install, and OpenCode, pi and other agents are
+  not evaluated.
 - **Windows installs.** No skill run has been checked against a real Windows
-  install of a published manifest; the examples are regression-derived.
+  install of a published manifest; the examples are regression-derived. This
+  needs a Windows machine and cannot be done from the macOS development
+  setup used so far.
