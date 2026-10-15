@@ -6,8 +6,8 @@ read the bucket's own scripts for exact CLI options, but rely on the names and
 locations below. A template release that changes any of them must bump the
 minimum template version recorded here.
 
-Minimum template version: `copier-scoop-bucket` commit `638b51a` (the Copier
-conversion). It has no tagged release yet; replace this with the first tag.
+Minimum template version: `copier-scoop-bucket` 0.1.0, the first release after
+the Copier conversion.
 
 ## mise tasks
 
