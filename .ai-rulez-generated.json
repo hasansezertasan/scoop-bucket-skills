@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:c00d9ec2858d74507de9186bcc2778f056ef24e84f3464f7fbd6f2a21bd2aac7",
+  "source_hash": "blake3:279053a71b5a0886b19aab12705f90d24b4c87574b8ca37e3ad6579f2acc9ef4",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -43,7 +43,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/SKILL.md": {
-      "content_hash": "blake3:e69e68c16d6c8beb78570eaf93384cd16accf3f016346ab84117a5540987bfc1",
+      "content_hash": "blake3:0250e39969b05bc15bf42d1f4635dc52ffc56e82b9251d4d30626d6bb2893a36",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/agents/openai.yaml": {
@@ -59,7 +59,7 @@
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-cases.md": {
-      "content_hash": "blake3:c70f9549f47352a26844c5a4d6edfaa21eb9e07d9401a2682a2f325f60ecaf41",
+      "content_hash": "blake3:0fda745dbf711d6342a435f286b156af8929f5d568f03794f9f67b021900aa20",
       "mode": "0644"
     },
     "skills/scoop-bucket-setup/references/setup-report.md": {

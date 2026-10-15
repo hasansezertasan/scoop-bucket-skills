@@ -26,8 +26,8 @@ settings or secrets, pushing, opening PRs, and running remote workflows.
 Read the template's `copier.yml` for the current questions and defaults, and
 the rendered bucket's `README.md`, `AGENTS.md`, `.github/workflows/` and
 `.config/mise.toml`, instead of relying on this skill's summary of them. The
-rendered README may still document the template's own scaffolder command; follow
-`scoop-add` for how to run it. Use
+rendered README points at the `scoop-add` scaffolder for adding manifests; older
+renders may still show an `add-manifest` mise task, so follow `scoop-add`. Use
 [references/setup-cases.md](references/setup-cases.md) for evidence and worked
 cases; recheck its locators after the template changes. Do not redesign
 workflows, token plumbing or template files as an implicit setup step. Surface
@@ -75,10 +75,11 @@ In **Settings → Actions → General**, verify Actions is enabled and policy al
 the pinned actions used by the rendered workflows. Check organization or
 enterprise limits if settings are unavailable. For automation using
 `GITHUB_TOKEN`, enable **Allow GitHub Actions to create and approve pull
-requests** where permitted. The README asks for read/write defaults, but the
-workflows deny permissions at workflow level and grant them per job. Do not
-broaden defaults or jobs to troubleshoot; inspect effective job permissions and
-repository policy instead.
+requests** where permitted. Keep the default workflow permissions read-only: the
+workflows set `permissions: {}` at workflow level and grant each job what it
+needs, so the repository default does not apply to them (an older render's
+README may still ask for read/write defaults). Do not broaden defaults or jobs to
+troubleshoot; inspect effective job permissions and repository policy instead.
 
 Explain the distinct credentials before requesting any secret:
 
