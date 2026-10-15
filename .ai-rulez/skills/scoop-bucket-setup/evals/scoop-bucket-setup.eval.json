@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "render-with-copier-not-github-template",
+      "description": "Create a bucket by rendering the Copier template, and keep rendered files separate from repository configuration.",
+      "prompt": "I want a new Scoop bucket for my team from the bucket template. What do I run and what else must I configure? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Renders the template with copier copy and does not suggest GitHub's Use this template or gh repo create --template."
+        },
+        {
+          "text": "Asks for or confirms owner, repository, default branch and first package instead of inventing them."
+        },
+        {
+          "text": "Separates rendered files from settings, secrets, labels and apps that are not rendered and must be checked."
+        },
+        {
+          "text": "Hands the first manifest to scoop-add and scoop-verify rather than hand-writing JSON."
+        }
+      ],
+      "tags": [
+        "scoop-bucket-setup",
+        "copier",
+        "desk-exercise"
+      ]
+    },
+    {
+      "id": "scoop-bucket-token-has-no-effect",
+      "description": "Explain which credential the update workflows actually read.",
+      "prompt": "I created a SCOOP_BUCKET_TOKEN secret but update PRs don't trigger CI. What should I do? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "States that no workflow or script reads SCOOP_BUCKET_TOKEN and that WORKFLOW_TOKEN is the secret the update steps use, falling back to GITHUB_TOKEN."
+        },
+        {
+          "text": "Explains that GITHUB_TOKEN suppresses follow-on runs with exceptions, and checks the actual runs rather than assuming."
+        },
+        {
+          "text": "Does not request or print secret values and does not recommend blanket repo or admin privileges."
+        }
+      ],
+      "tags": [
+        "scoop-bucket-setup",
+        "credentials",
+        "desk-exercise"
+      ]
+    },
+    {
+      "id": "unpublished-noop-blocks-install",
+      "description": "A shim scaffolded in a fresh bucket is not installable until the noop script is published at the exact repository and ref.",
+      "prompt": "I rendered the template, scaffolded a PyPI shim and the checks pass locally, but scoop install fails to download. Why? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "expect_trigger": true,
+      "rubric_items": [
+        {
+          "text": "Identifies that the shim's noop URL points at the bucket's repository and ref, which must publish the same LF bytes as the local scripts/noop.ps1."
+        },
+        {
+          "text": "Checks origin and SCOOP_BUCKET_REPOSITORY and SCOOP_BUCKET_REF overrides for stale values."
+        },
+        {
+          "text": "Does not replace the hash or point at the template to hide the mismatch, and keeps install evidence pending."
+        }
+      ],
+      "tags": [
+        "scoop-bucket-setup",
+        "noop",
+        "desk-exercise"
+      ]
+    }
+  ]
+}

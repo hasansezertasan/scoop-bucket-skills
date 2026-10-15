@@ -6,7 +6,8 @@ read the bucket's own scripts for exact CLI options, but rely on the names and
 locations below. A template release that changes any of them must bump the
 minimum template version recorded here.
 
-Minimum template version: _unreleased (set when the template is converted to Copier)_.
+Minimum template version: `bucket-template` commit `638b51a` (the Copier
+conversion). It has no tagged release yet; replace this with the first tag.
 
 ## mise tasks
 
@@ -32,8 +33,4 @@ Minimum template version: _unreleased (set when the template is converted to Cop
 | `.github/workflows/update-manifests.yml` | scheduled updates |
 | `.github/workflows/update-manifest-dispatch.yml` | dispatch updates |
 | `AGENTS.md` | the bucket's invariants; skills read it first |
-
-## Not covered
-
-Setting up a new bucket (identity, Actions, update credentials) is not part of
-this plugin yet; it will scaffold the Copier template once that exists.
+| `.copier-answers.yml` | recorded template source, version and answers; `copier update` reads it |

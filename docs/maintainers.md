@@ -7,6 +7,7 @@ the bucket checkout and a concrete outcome.
 
 | You want to | Start with |
 | --- | --- |
+| Set up a new bucket from the template | `scoop-bucket-setup` |
 | Add a PyPI shim or a prebuilt Windows binary | `scoop-add` |
 | Repair checkver, URLs, hashes, archive paths or commands | `scoop-fix-manifest` |
 | Understand a failing scheduled or dispatch update | `scoop-update-triage` |
@@ -23,5 +24,5 @@ Windows workflow or a local run of the same steps.
 
 These skills do not change host permissions or authorize outward actions:
 pushing, opening a PR, or triggering a remote workflow follows your own
-approval rules. Bucket setup is out of scope until the Copier template exists
-(see the [roadmap](roadmap.md)).
+approval rules. Setup renders the template with Copier; creating the repository
+and changing its settings or secrets follow the same rules.
