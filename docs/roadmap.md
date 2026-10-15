@@ -22,8 +22,8 @@ evidence from the relevant guide.
   shows correct answers, including for `removal-needs-no-windows-install`,
   which the judge still marks failed, so the judge or rubric is the suspect, not
   the skill; this is unconfirmed because the runner reports only "outcome
-  checks failed". `scoop-add` and `scoop-bucket-setup` were not rerun with the
-  new prompts. Also open: in the runner's temporary plugin copy the skill's
+  checks failed". `scoop-add` and `scoop-bucket-setup` were rerun with the new prompts
+  at three runs per case (about $2.20) and passed all five cases. Also open: in the runner's temporary plugin copy the skill's
   `../../references/contract.md` link does not resolve (the generated root
   skills link `references/contract.md`, which exists), so the contract was never
   read in these runs. Do not pass `--runner-arg --json`: it collides with the
