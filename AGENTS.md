@@ -8,7 +8,7 @@
 
 This repository is a Claude Code plugin (and its marketplace) holding skills
 for operating a Scoop bucket made from
-[`bucket-template`](https://github.com/hasansezertasan/bucket-template).
+[`copier-scoop-bucket`](https://github.com/hasansezertasan/copier-scoop-bucket).
 
 #### Agent Instructions
 

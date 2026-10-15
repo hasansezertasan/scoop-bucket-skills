@@ -2,7 +2,8 @@
 
 ## Provenance
 
-Inspected `bucket-template` at `fcc017c` (2026-10-15). That revision includes the
+Inspected `copier-scoop-bucket` (named `bucket-template` until 2026-10-15) at
+`fcc017c` (2026-10-15). That revision includes the
 Copier conversion (`638b51a`, PR 27), the move of the manifest scaffolder out to
 the `scoop-add` skill (`7a069ee`, PR 28) and the read-only default-permissions
 guidance (`fcc017c`, PR 30). Every locator below was rechecked at it. A render of

@@ -1,5 +1,5 @@
 ---
 interface:
   display_name: "Set Up a Scoop Bucket"
-  short_description: "Render bucket-template and configure the new bucket"
+  short_description: "Render copier-scoop-bucket and configure the new bucket"
   default_prompt: "Use $scoop-bucket-setup to set up a bucket and verify its first manifest."
