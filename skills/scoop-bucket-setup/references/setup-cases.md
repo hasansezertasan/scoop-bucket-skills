@@ -2,8 +2,11 @@
 
 ## Provenance
 
-Inspected `bucket-template` at `638b51a` (2026-10-15), the commit that converted
-it to a Copier template (PR 27). Locators below are paths in that repository;
+Inspected `bucket-template` at `fcc017c` (2026-10-15). PR 27 (`638b51a`)
+converted it to a Copier template; PR 28 (`7a069ee`) moved the manifest
+scaffolder out to the `scoop-add` skill. A render of `638b51a` still ships the
+scaffolder scripts and the `add-manifest` mise task; later renders do not.
+Locators below are paths in that repository;
 files under `template/` land at the same path without the prefix in a rendered
 bucket. `bucket/` and `deprecated/` contain only `.gitkeep`, and the template has
 no tagged release yet. The cases are synthetic desk scenarios grounded in the
@@ -21,7 +24,7 @@ boilerplate failure, not proof of a template, token or shim incident.
 | Rendered answers record used by `copier update` | `template/.copier-answers.yml.jinja` |
 | What the rendered setup checklist says | `template/README.md.jinja`, Setup / Install packages / Add a manifest / Automated updates |
 | Token names, producer versus bucket responsibilities | `template/README.md.jinja`, Automated updates; `template/.github/workflows/update-manifests.yml`, `update` job; `update-manifest-dispatch.yml`, Create Pull Request / Report failure |
-| CLI → environment → remote precedence | the `scoop-add` skill's `scripts/add_manifest.py` (shim CLI and `main`) and `scripts/bucket_repository.py` (`resolve` / `from_remote`); `tests/test_bucket_repository.py`. The template no longer ships a copy (removed in its PR 28) |
+| CLI → environment → remote precedence | the `scoop-add` skill's `scripts/add_manifest.py` (shim CLI and `main`) and `scripts/bucket_repository.py` (`resolve` / `from_remote`); `tests/test_bucket_repository.py`. Renders from PR 28 (`7a069ee`) onward no longer ship a copy |
 | Local LF-normalized hash and raw repository/ref URL | the `scoop-add` skill's `scripts/add_manifest.py`, `noop_source`; `template/.gitattributes`; `tests/test_add_manifest.py` |
 | API-only authorization and redirect stripping | the `scoop-add` skill's `scripts/url_fetch.py`; `tests/test_url_fetch.py` |
 | First-manifest scaffolder and verification ownership | the `scoop-add` and `scoop-verify` skills |
