@@ -22,8 +22,10 @@ evidence from the relevant guide.
   shows correct answers, including for `removal-needs-no-windows-install`,
   which the haiku judge marks failed. With `--judge-model sonnet` that case
   passed three runs and `deprecate-with-pipx-sibling` still failed, although a
-  kept answer satisfies all four of its rubric items on a manual read. The judge
-  is the suspect, not the skill; this is unconfirmed because the runner reports
+  separate per-item Sonnet grading of its three kept answers passed all four
+  rubric items each time, so no single item is being rejected and rewording the
+  rubric would not help. The runner's verdict on that case is unexplained and
+  the skill is not shown to be at fault; the runner reports
   only "outcome checks failed" and `--grader builtin` needs a persistent `[llm]`
   model and `allow_network` in the user config, which was not set up. `scoop-add` and `scoop-bucket-setup` were rerun with the new prompts
   at three runs per case (about $2.20) and passed all five cases. Also open: in the runner's temporary plugin copy the skill's
