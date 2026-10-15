@@ -89,6 +89,14 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(am.templatize("v1%2f2", "1/2"), "v$version")
         self.assertEqual(am.templatize("tools/v1/2", "1/2"), "tools/v$version")
 
+    def test_templatize_ignores_versions_inside_longer_numbers(self) -> None:
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            self.assertEqual(
+                am.templatize("tool-win32-v3.zip", "3"), "tool-win32-v$version.zip"
+            )
+            self.assertEqual(am.templatize("x64-1.2.3.1.zip", "1.2.3"), "x64-1.2.3.1.zip")
+        self.assertIn("longer number", err.getvalue())
+
     def test_templatize_warns_when_absent(self) -> None:
         buf = io.StringIO()
         with mock.patch("sys.stderr", buf):
@@ -685,6 +693,45 @@ class AddBinaryTest(unittest.TestCase):
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
             "https://github.com/o/r/releases/download/$version/tool.zip",
+        )
+
+    def test_add_binary_keeps_uppercase_tag_prefix_literal(self) -> None:
+        meta = {"html_url": "https://github.com/o/r", "description": "tool"}
+        release = {
+            "tag_name": "V1.2.3",
+            "assets": [
+                {
+                    "name": "tool.zip",
+                    "browser_download_url": "https://github.com/o/r/releases/download/V1.2.3/tool.zip",
+                }
+            ],
+        }
+        args = argparse.Namespace(
+            repo="o/r", name="tool", seed=False, artifact="tool.zip",
+            extract_dir=None, bin="tool.exe",
+        )
+        written = {}
+
+        def fake_write(name: str, data: dict) -> Path:
+            written["data"] = data
+            return Path(f"bucket/{name}.json")
+
+        with (
+            mock.patch.object(am, "fetch_json", side_effect=[meta, release]),
+            mock.patch.object(am, "download_zip", return_value="/tmp/fake.zip"),
+            mock.patch.object(am, "sha256_of_file", return_value="0" * 64),
+            mock.patch.object(am, "inspect_zip", return_value=(None, "tool.exe", "")),
+            mock.patch.object(am, "_write_manifest", side_effect=fake_write),
+            mock.patch("os.unlink"),
+            mock.patch("sys.stdout"),
+            mock.patch("sys.stderr"),
+        ):
+            am.add_binary(args)
+
+        self.assertEqual(written["data"]["version"], "1.2.3")
+        self.assertEqual(
+            written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
+            "https://github.com/o/r/releases/download/V$version/tool.zip",
         )
 
     def test_add_binary_handles_encoded_slashes(self) -> None:

@@ -311,7 +311,14 @@ def templatize(text: str, version: str) -> str:
                   "URL won't auto-update on release bumps — verify the manifest",
                   file=sys.stderr)
             return text
-    return text.replace(target, "$version")
+    # Match the version as a whole number, not inside a longer one, so a short
+    # version such as "3" leaves "win32" or "x64" alone.
+    templated = re.sub(rf"(?<!\d){re.escape(target)}(?!\.?\d)", "$version", text)
+    if templated == text:
+        print(f"warning: version {version!r} appears in {text!r} only inside a longer "
+              "number; that part of the URL won't auto-update on release bumps — "
+              "verify the manifest", file=sys.stderr)
+    return templated
 
 
 def render_binary(spec: BinaryManifestSpec) -> dict:
@@ -381,7 +388,8 @@ def add_binary(args: argparse.Namespace) -> None:
                          "use --seed to scaffold a placeholder for the first release")
             raise
         tag = release["tag_name"]
-        version = tag[1:] if re.fullmatch(r"v\d.*", tag) else tag
+        # Scoop's github checkver drops an optional leading v or V from the tag.
+        version = tag[1:] if re.fullmatch(r"[vV]\d.*", tag) else tag
         if "/" in version:
             print(f"warning: release tag {tag!r} puts '/' in the version, which Scoop's "
                   "manifest schema rejects; add a checkver regex that extracts a "
