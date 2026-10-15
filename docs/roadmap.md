@@ -8,10 +8,12 @@ evidence from the relevant guide.
 
 - **Model trials.** The eval cases in each skill's `evals/` are desk exercises
   with rubrics. A first run on 2026-10-15 (`ai-rulez eval run`, `claude-plugin-eval`
-  runner, default model) passed 8 of 14 cases, but most failures were the
-  setup, not the skills: the runner starts every run in an empty directory with
-  no bucket checkout, so cases that said "read the repository's code and
-  workflows" got generic answers or refusals. The prompts now say no checkout
+  runner, default model) passed 8 of 14 cases. The first-trial failures were not
+  diagnosed one by one, but transcripts from later runs show the runner starts
+  every run in an empty directory with no bucket checkout, so cases that said
+  "read the repository's code and workflows" got generic answers or refusals,
+  which probably explains most of them. The kept traces of the later runs record
+  the default model as `claude-opus-5-5`; the first trial did not record it. The prompts now say no checkout
   is available and ask for the skill's guidance plus the files to inspect; the
   `scoop-fix-manifest` rubric asks the answer to direct reproducing and
   checking, not to do it. On a rerun at three runs per case (Claude Code
