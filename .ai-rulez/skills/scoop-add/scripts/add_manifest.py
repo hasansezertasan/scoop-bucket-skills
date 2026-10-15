@@ -214,6 +214,22 @@ def select_zip(assets: list[dict], wanted: str | None) -> dict:
     sys.exit(f"error: no .zip asset found; pass --artifact to choose one of: {names}")
 
 
+_NON_X64 = re.compile(r"arm64|aarch64|\barm\b|i[3-6]86|ia32|x86(?![-_]?64)", re.I)
+_X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
+
+
+def warn_if_not_x64(asset_name: str) -> None:
+    """Warn when the chosen asset looks like a non-x64 build.
+
+    The scaffolder always writes ``architecture.64bit``, so an ARM or 32-bit
+    archive would be offered to x64 machines.
+    """
+    if _NON_X64.search(asset_name) and not _X64.search(asset_name):
+        print(f"warning: {asset_name!r} looks like a non-x64 build, but the manifest "
+              "is written under architecture.64bit; pick an x64 asset or hand-write "
+              "the architecture block before merging", file=sys.stderr)
+
+
 def download_zip(url: str) -> str:
     """Download a release asset to a temp file and return its path (caller unlinks)."""
     print(f"==> Downloading {url} to compute sha256 and inspect the archive",
@@ -400,6 +416,7 @@ def add_binary(args: argparse.Namespace) -> None:
                   "autoupdate URL before merging", file=sys.stderr)
         asset = select_zip(release.get("assets", []), args.artifact)
         artifact = asset["name"]
+        warn_if_not_x64(artifact)
         tmp = download_zip(asset["browser_download_url"])
         try:
             sha = sha256_of_file(tmp)

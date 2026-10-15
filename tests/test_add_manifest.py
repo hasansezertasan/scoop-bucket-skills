@@ -100,6 +100,16 @@ class HelperTest(unittest.TestCase):
             self.assertEqual(am.templatize("x64-1.2.3.1.zip", "1.2.3"), "x64-1.2.3.1.zip")
         self.assertIn("longer number", err.getvalue())
 
+    def test_warn_if_not_x64_flags_arm_and_32bit_only(self) -> None:
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            am.warn_if_not_x64("tool-x86_64-windows.zip")
+            am.warn_if_not_x64("tool-windows-amd64.zip")
+            am.warn_if_not_x64("tool.zip")
+            self.assertEqual(err.getvalue(), "")
+            am.warn_if_not_x64("tool-windows-arm64.zip")
+            am.warn_if_not_x64("tool-win-x86.zip")
+        self.assertEqual(err.getvalue().count("non-x64"), 2)
+
     def test_templatize_warns_when_absent(self) -> None:
         buf = io.StringIO()
         with mock.patch("sys.stderr", buf):
