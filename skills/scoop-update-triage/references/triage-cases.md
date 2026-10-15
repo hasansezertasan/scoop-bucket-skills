@@ -9,7 +9,7 @@ observed. Reinspect current code when using this skill in another bucket.
 
 The four available scheduled runs inspected on 2026-10-08 were successful;
 the dispatch workflow had no available runs. Latest scheduled run:
-<https://github.com/hasansezertasan/bucket-template/actions/runs/37352758748>,
+<https://github.com/hasansezertasan/copier-scoop-bucket/actions/runs/37352758748>,
 at `2e6d55f0e82eacac343bd266d9ad24b852ea10da`, reported
 `No updates available.` and no PR creation because the branch was not ahead.
 Its missing remote `auto-update/scheduled` ref was handled by the PR action;

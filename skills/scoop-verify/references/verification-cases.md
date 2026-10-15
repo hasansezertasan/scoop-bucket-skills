@@ -9,7 +9,7 @@ still comes from the current remote or an explicit override.
 ## Observed workflow failure: managed boilerplate
 
 The template's Tests run
-<https://github.com/hasansezertasan/bucket-template/actions/runs/37793397032>
+<https://github.com/hasansezertasan/copier-scoop-bucket/actions/runs/37793397032>
 at `85a1e2e3687d1c2f931d53443ff244494cd4aa7d` failed Cobo verification:
 
 ```text
