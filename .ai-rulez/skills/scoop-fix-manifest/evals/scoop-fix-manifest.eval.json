@@ -4,20 +4,20 @@
     {
       "id": "checkver-drift",
       "description": "Reproduce first, then repair version discovery and keep concrete and autoupdate entries aligned.",
-      "prompt": "The widget manifest's checkver stopped matching after upstream changed its release page, and the update workflow reports no version found. Explain how to repair it. This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "The widget manifest's checkver stopped matching after upstream changed its release page, and the update workflow reports no version found. Explain how to repair it. This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {
-          "text": "Reproduces and classifies the failure before editing."
+          "text": "Directs reproducing and classifying the failure before editing."
         },
         {
           "text": "Repairs checkver and keeps the concrete URL/hash and the autoupdate template aligned."
         },
         {
-          "text": "Checks the real download rather than assuming the new URL pattern."
+          "text": "Directs checking the real download rather than assuming the new URL pattern."
         },
         {
-          "text": "Finishes by invoking scoop-verify for the readiness verdict."
+          "text": "Finishes by directing scoop-verify for the readiness verdict."
         }
       ],
       "tags": [
@@ -29,7 +29,7 @@
     {
       "id": "zero-hash-placeholder",
       "description": "Handle all-zero hashes as placeholders, not as a verified state.",
-      "prompt": "A binary manifest has an all-zero architecture hash and a version of 2.0.0. Is it fine to leave as is, and how do I fix it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "A binary manifest has an all-zero architecture hash and a version of 2.0.0. Is it fine to leave as is, and how do I fix it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {

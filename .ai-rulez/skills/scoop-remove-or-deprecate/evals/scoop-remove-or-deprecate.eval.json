@@ -4,7 +4,7 @@
     {
       "id": "deprecate-with-pipx-sibling",
       "description": "Bound the exact manifest set, including a real -pipx sibling, and preserve alternatives.",
-      "prompt": "Upstream retired the widget tool. The bucket has widget.json and widget-pipx.json, and another manifest depends on widget. How should I retire it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "Upstream retired the widget tool. The bucket has widget.json and widget-pipx.json, and another manifest depends on widget. How should I retire it? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {
@@ -29,7 +29,7 @@
     {
       "id": "removal-needs-no-windows-install",
       "description": "A removal-only change needs the local gate but no new Windows install.",
-      "prompt": "I removed one manifest and regenerated the README. Do I need a Windows install run before the PR? This is a desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and answer concretely.",
+      "prompt": "I removed one manifest and regenerated the README. Do I need a Windows install run before the PR? This is a desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Answer concretely.",
       "expect_trigger": true,
       "rubric_items": [
         {

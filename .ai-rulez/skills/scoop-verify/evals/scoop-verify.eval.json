@@ -4,7 +4,7 @@
     {
       "id": "shim-noop-identity-mismatch",
       "description": "Check both siblings, canonical LF local noop hash, concrete and static autoupdate URL/hash, exact remote response bytes, origin-derived identity, README and local gate; block mismatch and mark Windows evidence pending.",
-      "prompt": "Verify a proposed PyPI shim change in this bucket. The widget and widget-pipx manifests use the locally calculated noop hash but their URL points to raw.githubusercontent.com/old-owner/old-bucket/main/scripts/noop.ps1. The intended bucket identity comes from the current origin. The checkout may have CRLF; the raw URL returns different bytes. Local unit tests pass. No Windows result exists. Explain the checks, blockers, and evidence needed before calling it ready. This is a regression-derived desk exercise: do not edit the repo, run installs, or perform network requests. Read the repository's relevant code and workflows and give a concrete verification report.",
+      "prompt": "Verify a proposed PyPI shim change in this bucket. The widget and widget-pipx manifests use the locally calculated noop hash but their URL points to raw.githubusercontent.com/old-owner/old-bucket/main/scripts/noop.ps1. The intended bucket identity comes from the current origin. The checkout may have CRLF; the raw URL returns different bytes. Local unit tests pass. No Windows result exists. Explain the checks, blockers, and evidence needed before calling it ready. This is a regression-derived desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Give a concrete verification report.",
       "expect_trigger": true,
       "rubric_items": [
         {
@@ -20,12 +20,16 @@
           "text": "Includes README regeneration, mise run check, and pending Windows evidence."
         }
       ],
-      "tags": ["scoop-verify", "shim", "desk-exercise"]
+      "tags": [
+        "scoop-verify",
+        "shim",
+        "desk-exercise"
+      ]
     },
     {
       "id": "seeded-placeholder-not-verified",
       "description": "Recognize architecture placeholder by hash despite nonzero version, preserve CI skip, do not install or call install passed, review concrete/autoupdate pair, regenerate README/run full gate and defer install until real asset/hash exists.",
-      "prompt": "Is this seeded binary PR verified? A widget manifest has version 1.2.3, architecture.64bit.hash equal to 64 zeroes, a plausible GitHub release URL, and a checkver/autoupdate pair. The Tests run passed JSON lint and unit tests but skipped its Windows install. The README table has not been regenerated. Use this repository to explain what to check and how to report status. This is a regression-derived desk exercise: do not edit the repo, run installs, or perform network requests. Read relevant code and workflows and give a concrete verification report.",
+      "prompt": "Is this seeded binary PR verified? A widget manifest has version 1.2.3, architecture.64bit.hash equal to 64 zeroes, a plausible GitHub release URL, and a checkver/autoupdate pair. The Tests run passed JSON lint and unit tests but skipped its Windows install. The README table has not been regenerated. No bucket checkout is available in this session, so do not search for one: explain from the skill's guidance what to check and how to report status. This is a regression-derived desk exercise: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Give a concrete verification report.",
       "expect_trigger": true,
       "rubric_items": [
         {
@@ -41,12 +45,16 @@
           "text": "Requires README regeneration and full mise run check; reviews checkver/autoupdate alignment."
         }
       ],
-      "tags": ["scoop-verify", "seed", "desk-exercise"]
+      "tags": [
+        "scoop-verify",
+        "seed",
+        "desk-exercise"
+      ]
     },
     {
       "id": "binary-extract-dir-bin-mismatch",
       "description": "Fix bin to widget-cli.exe relative to extract_dir; override widget key to widget-cli --version; validate asset/hash and templates, require latest-head Windows install/smoke, run full gate/README generation, handle Cobo via managed sync without calling it a manifest failure.",
-      "prompt": "Verify a binary update here before a PR: widget's new archive contains dist/widget-cli.exe, extract_dir is dist, but bin is still dist/widget-cli.exe. Upstream only supports widget-cli --version. The smoke map is empty and local unit tests pass. No Windows run covers the new head. Separately, a historical Tests run failed because Cobo reported .gitignore outdated while Windows was skipped. Diagnose the evidence and state what needs to happen. This is a regression-derived desk exercise with an observed Cobo failure: do not edit the repo, run installs, or perform network requests. Read relevant code and workflows and give a concrete verification report.",
+      "prompt": "Verify a binary update here before a PR: widget's new archive contains dist/widget-cli.exe, extract_dir is dist, but bin is still dist/widget-cli.exe. Upstream only supports widget-cli --version. The smoke map is empty and local unit tests pass. No Windows run covers the new head. Separately, a historical Tests run failed because Cobo reported .gitignore outdated while Windows was skipped. Diagnose the evidence and state what needs to happen. This is a regression-derived desk exercise with an observed Cobo failure: do not edit the repo, run installs, or perform network requests. No bucket checkout is available in this session, so do not search for one: answer from the skill's guidance and name the bucket files, scripts and workflow jobs you would inspect. Give a concrete verification report.",
       "expect_trigger": true,
       "rubric_items": [
         {
@@ -62,7 +70,11 @@
           "text": "Classifies Cobo drift separately and uses managed sync rather than hand-editing .gitignore; includes README and full local gate."
         }
       ],
-      "tags": ["scoop-verify", "binary", "desk-exercise"]
+      "tags": [
+        "scoop-verify",
+        "binary",
+        "desk-exercise"
+      ]
     }
   ]
 }
