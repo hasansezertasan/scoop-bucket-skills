@@ -1,0 +1,38 @@
+{
+  "name": "scoop-bucket-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests.",
+  "license": "MIT",
+  "author": {
+    "name": "Hasan Sezer Tasan",
+    "url": "https://github.com/hasansezertasan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hasansezertasan/scoop-bucket-skills"
+  },
+  "keywords": [
+    "scoop",
+    "bucket",
+    "windows",
+    "manifest",
+    "pi-package"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "generate": "ai-rulez generate --no-self-mcp --strict-config && ai-rulez generate --plugin",
+    "check": "node scripts/check-repo.mjs && ai-rulez generate --check --no-self-mcp --strict-config && ai-rulez verify --plugin && ai-rulez validate --strict",
+    "test": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v"
+  },
+  "devDependencies": {
+    "ai-rulez": "5.3.0"
+  }
+}

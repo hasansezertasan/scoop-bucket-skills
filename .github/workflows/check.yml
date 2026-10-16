@@ -1,40 +1,28 @@
-name: check
-# Unfiltered on purpose: nearly every source and output here is Markdown or
-# JSON, so a path filter would let a source-only edit merge with stale
-# generated files, and a filtered required check never reports on skipped PRs.
-# ai-rulez and python come from .config/mise.toml, so the versions CI uses are
-# the ones Renovate bumps. Also called by release.yml (workflow_call).
+name: Check
 
+# Unfiltered on purpose: a required check must always report. Reusable so the
+# release workflow runs the very same job before it releases.
 on:
-  pull_request:
   push:
-    branches: [main]
+  pull_request:
   workflow_call:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: Commit or release PR branch to validate (empty uses this workflow's commit)
-        type: string
-        required: false
 
-# Deny-by-default; each job opts back into exactly what it needs.
 permissions: {}
 
 jobs:
-  validate:
-    name: validate
+  check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref || github.sha }}
           persist-credentials: false
-      - name: Install python and ai-rulez
-        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          cache: false
-      - name: Unit tests, generated files up to date, sources valid
-        run: mise run check
+          node-version-file: .node-version
+      - run: npm ci
+      - run: npm run check
+      # This repo's own Python unit tests; the template ships none.
+      - run: npm test

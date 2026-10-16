@@ -1,43 +1,27 @@
 [tools]
-"github:Goldziher/ai-rulez" = "5.3.0"
+node = "24"
 python = "3.15.0"
 # Not used by tasks here: the version Renovate tracks. The scoop-bucket-setup
 # skill ships its own copy of this pin; tests/test_copier_pin.py keeps them equal.
 "pipx:copier" = "9.18.2"
 
+# The scaffold's scripts live in package.json; these tasks keep the commands in
+# README.md, CONTRIBUTING.md and AGENTS.md working.
 [tasks."agents:generate"]
 description = "Regenerate AGENTS.md, root skills/ and plugin manifests from .ai-rulez/"
-run = [
-  "ai-rulez generate --no-self-mcp --strict-config",
-  "ai-rulez generate --plugin",
-]
-
-[tasks."agents:check"]
-description = "Verify generated files match .ai-rulez/ (read-only)"
-run = [
-  "ai-rulez generate --check --no-self-mcp --strict-config",
-  "ai-rulez verify --plugin",
-]
-
-[tasks."agents:validate"]
-description = "Lint .ai-rulez/ config and content (skill pointers, links, eval cases)"
-run = "ai-rulez validate --strict"
+run = "npm run generate"
 
 [tasks."agents:eval"]
 description = "Offline skill-activation signal over eval prompts (retrieval ranker; no model, no cost). Informational, not a merge gate."
-run = "ai-rulez eval run --mode activation --surface retrieval --no-write"
+run = "npm exec -- ai-rulez eval run --mode activation --surface retrieval --no-write"
 
 [tasks."test"]
 description = "Run the unit test suite"
-# The tests import the scoop-add scripts from .ai-rulez/; bytecode written next
-# to them would be copied into the generated skills/ and fail the drift check.
-env = { PYTHONDONTWRITEBYTECODE = "1" }
-run = "python -m unittest discover -s tests -v"
+run = "npm test"
 
 [tasks."check"]
 description = "Run all local verification"
 run = [
   { task = "test" },
-  { task = "agents:check" },
-  { task = "agents:validate" },
+  "npm run check",
 ]

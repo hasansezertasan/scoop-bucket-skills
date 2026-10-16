@@ -1,8 +1,0 @@
-# Version carrier only: release-please bumps it and ai-rulez reads it
-# (`[plugin] version_from`). This repository is not a Python package.
-[project]
-name = "scoop-bucket-skills"
-version = "0.1.0"
-description = "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests."
-requires-python = ">=3.12"
-license = "MIT"
