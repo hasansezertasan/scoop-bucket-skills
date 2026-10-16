@@ -71,9 +71,10 @@ You were pointed here to install the skills. Do this:
 To compare an installed version with the latest, use the version in
 `.claude-plugin/plugin.json` or the repository's latest GitHub release.
 
-None of these routes has a recorded successful installation yet: see
-[host support](host-support.md) for the evidence per host. Treat them as
-unverified packaging guidance, and tell the user which route you used, whether
+The Claude Code and Codex plugin routes each have one recorded installation
+on macOS; the skills installer route has none: see
+[host support](host-support.md) for the evidence per host. Treat the installer
+route as unverified packaging guidance, and tell the user which route you used, whether
 you confirmed the skills afterwards, and whether a new session is needed.
 
 The skills assume a bucket made from

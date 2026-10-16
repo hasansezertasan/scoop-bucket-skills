@@ -31,9 +31,9 @@ codex plugin marketplace add /absolute/path/to/scoop-bucket-skills
 codex plugin add scoop-bucket-skills@scoop-bucket-skills
 ```
 
-These install flows follow the plugin manifests, but a successful installation
-has not yet been recorded for Claude Code or Codex, so treat them as unverified
-packaging guidance. Other agents can read `skills/<name>/SKILL.md`. See
+Both install flows were run once on macOS (see [host support](docs/host-support.md)
+for versions and scope); that is an install and one desk prompt, not a
+task-success result. Other agents can read `skills/<name>/SKILL.md`. See
 [host support](docs/host-support.md) for the evidence recorded per host. The
 skills assume the layout in the
 [template contract](.ai-rulez/references/contract.md).
