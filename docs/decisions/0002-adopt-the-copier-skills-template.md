@@ -20,6 +20,9 @@ it is not updated as the project evolves.
   release PR branch is no longer needed.
 - **CI and release workflows, Renovate config, `.node-version`,
   `scripts/check-repo.mjs`.** Taken as rendered.
+- **Required check name.** The check job is now `check`, not `validate`. Branch
+  protection on `main` must require `check` instead; this setting lives on
+  GitHub, so the change does not make that edit.
 
 ## Differences kept on purpose
 
