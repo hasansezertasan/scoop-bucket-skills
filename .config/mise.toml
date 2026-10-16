@@ -1,27 +1,5 @@
 [tools]
-node = "24"
 python = "3.15.0"
 # Not used by tasks here: the version Renovate tracks. The scoop-bucket-setup
 # skill ships its own copy of this pin; tests/test_copier_pin.py keeps them equal.
-"pipx:copier" = "9.18.2"
-
-# The scaffold's scripts live in package.json; these tasks keep the commands in
-# README.md, CONTRIBUTING.md and AGENTS.md working.
-[tasks."agents:generate"]
-description = "Regenerate AGENTS.md, root skills/ and plugin manifests from .ai-rulez/"
-run = "npm run generate"
-
-[tasks."agents:eval"]
-description = "Offline skill-activation signal over eval prompts (retrieval ranker; no model, no cost). Informational, not a merge gate."
-run = "npm exec -- ai-rulez eval run --mode activation --surface retrieval --no-write"
-
-[tasks."test"]
-description = "Run the unit test suite"
-run = "npm test"
-
-[tasks."check"]
-description = "Run all local verification"
-run = [
-  { task = "test" },
-  "npm run check",
-]
+copier = "9.18.2"

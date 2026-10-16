@@ -12,7 +12,7 @@ class CopierPinTest(unittest.TestCase):
     def test_skill_pin_matches_mise_pin(self):
         tools = tomllib.loads((ROOT / ".config/mise.toml").read_text())["tools"]
         skill = (ROOT / ".ai-rulez/skills/scoop-bucket-setup/SKILL.md").read_text()
-        self.assertEqual(re.findall(r"copier@(\S+)", skill), [tools["pipx:copier"]])
+        self.assertEqual(re.findall(r"copier@(\S+)", skill), [tools["copier"]])
 
 
 if __name__ == "__main__":

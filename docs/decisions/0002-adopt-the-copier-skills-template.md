@@ -35,11 +35,12 @@ it is not updated as the project evolves.
   `version_from` changed to `package.json`.
 - **Python unit tests.** `npm test` runs `tests/` and `check.yml` has one extra
   step for it; the template ships no tests.
-- **mise.** `.config/mise.toml` keeps the Renovate-tracked Copier pin (kept
-  equal to the one in `scoop-bucket-setup` by `tests/test_copier_pin.py`) and
-  thin tasks (`check`, `test`, `agents:generate`, `agents:eval`) over the npm
-  scripts, so the commands in `README.md`, `AGENTS.md` and `CONTRIBUTING.md`
-  still work. The ai-rulez pin moved to `package.json`.
+- **mise.** `.config/mise.toml` keeps only the tool pins: the Renovate-tracked
+  Copier version (kept equal to the one in `scoop-bucket-setup` by
+  `tests/test_copier_pin.py`) and the Python version the unit tests use. The
+  tasks are gone; the commands are the npm scripts, and the ai-rulez pin moved
+  to `package.json`. `README.md` still shows the old `mise run` commands, which
+  the adoption was not allowed to change.
 - **`CONTRIBUTING.md` and `docs/installation.md`.** The template's versions plus
   scoop-specific sections (development notes, the skill table, the install
   prompt, the skills-installer route, host-support links). These are

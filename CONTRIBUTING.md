@@ -16,18 +16,18 @@ This file is owned by the [copier-skills](https://github.com/hasansezertasan/cop
 
 ### Scoop Bucket Skills specifics
 
-`mise run agents:generate` and `mise run check` wrap the npm scripts, and
-`mise run check` also runs the Python unit tests in `tests/` (`npm test`). They
-read `.ai-rulez/` and regenerate `AGENTS.md`, root `skills/`, the Claude and
-Codex manifests, both catalogs and `.ai-rulez-generated.json`. Keep canonical
-edits and their generated output in the same commit.
+`npm run generate` reads `.ai-rulez/` and regenerates `AGENTS.md`, root
+`skills/`, the Claude and Codex manifests, both catalogs and
+`.ai-rulez-generated.json`. `npm test` runs the Python unit tests in `tests/`,
+which the template does not ship. Keep canonical edits and their generated
+output in the same commit.
 
 `validate --strict` reports `AR961 plugin-version-drift` while plugin content
 differs from `HEAD` and the version has not changed, so `npm run check` fails
 locally until the edit and its generated output are committed. CI validates the
 committed tree and release-please owns the version, so this is expected.
 
-`mise run agents:eval` is an offline, informational skill-activation ranking
+`npm exec -- ai-rulez eval run --mode activation --surface retrieval --no-write` is an offline, informational skill-activation ranking
 over the eval prompts; it is not a merge gate. Model-based evaluations need
 authentication and cost, so keep them out of CI.
 
