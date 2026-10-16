@@ -16,8 +16,10 @@ it is not updated as the project evolves.
   plugin manifests bumped by release-please `extra-files`. `scripts/release_guard.py`
   and its test were replaced by the template's `release-merge.mjs` and
   `release-guard.mjs`, which implement the same sole-pending-release rule and
-  add a version-drift check. The workflow that regenerated manifests on the
-  release PR branch is no longer needed.
+  add a version-drift check. The template's release workflow also
+  regenerates the plugin output on the release PR branch (a read-only job builds
+  a patch and a separate job pushes it), replacing the repo's own step that did
+  the same.
 - **CI and release workflows, Renovate config, `.node-version`,
   `scripts/check-repo.mjs`.** Taken as rendered.
 - **Required check name.** The check job is now `check`, not `validate`. Branch
