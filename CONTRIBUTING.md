@@ -18,7 +18,7 @@ This file is owned by the [copier-skills](https://github.com/hasansezertasan/cop
 
 `npm run generate` reads `.ai-rulez/` and regenerates `AGENTS.md`, root
 `skills/`, the Claude and Codex manifests, both catalogs and
-`.ai-rulez-generated.json`. `npm test` runs the Python unit tests in `tests/`,
+`.ai-rulez-generated.json`. `npm test` runs the Python unit tests in `tests/` (`python` on your PATH),
 which the template does not ship. Keep canonical edits and their generated
 output in the same commit.
 

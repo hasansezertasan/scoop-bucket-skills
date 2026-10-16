@@ -24,5 +24,6 @@ jobs:
           node-version-file: .node-version
       - run: npm ci
       - run: npm run check
-      # This repo's own Python unit tests; the template ships none.
-      - run: npm test
+      # This repo's own Python unit tests; the template ships none. `-B` keeps
+      # bytecode out of the generated skills/; the runner has python3 only.
+      - run: python3 -B -m unittest discover -s tests -v
