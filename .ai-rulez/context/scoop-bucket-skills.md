@@ -16,11 +16,11 @@ operating a Scoop bucket made from
 `.ai-rulez/` is the single source for agent instructions and skills.
 `AGENTS.md`, root `skills/`, `.claude-plugin/`, `.codex-plugin/`,
 `.agents/plugins/marketplace.json`, and `.ai-rulez-generated.json` are
-generated from it; edit `.ai-rulez/` and run `mise run agents:generate`, then
+generated from it; edit `.ai-rulez/` and run `npm run generate`, then
 commit the generated files. Never hand-edit generated files. Checks report
 drift without repairing the checkout. Plugin identity, runtimes and the Codex
 interface live in `.ai-rulez/config.toml`; it has no literal version, which
-`pyproject.toml` supplies (see `CONTRIBUTING.md`).
+`package.json` supplies (see `CONTRIBUTING.md`).
 
 #### Invariants
 
@@ -42,14 +42,14 @@ interface live in `.ai-rulez/config.toml`; it has no literal version, which
 #### Releases
 
 Use Conventional Commit PR titles. release-please owns `CHANGELOG.md`, the
-release manifest and the `pyproject.toml` version; the release workflow then
-regenerates the plugin manifests on the release PR. Details in
-`CONTRIBUTING.md`.
+release manifest and the `package.json` version, and bumps the generated plugin
+manifests alongside it. Details in `CONTRIBUTING.md`.
 
 #### Commands
 
 ```sh
-mise install
-mise run check
-mise run agents:generate
+npm install
+npm run check
+npm test
+npm run generate
 ```

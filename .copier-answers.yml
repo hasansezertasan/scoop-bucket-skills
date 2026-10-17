@@ -1,0 +1,13 @@
+_commit: v0.1.2
+_src_path: https://github.com/hasansezertasan/copier-skills
+author_name: Hasan Sezer Tasan
+author_url: https://github.com/hasansezertasan
+description: 'Skills for operating a Scoop bucket: set it up, then add, fix, triage,
+    remove, and verify manifests.'
+github_owner: hasansezertasan
+keywords: scoop, bucket, windows, manifest
+license: MIT
+placeholder_skill: hello
+publish_to_npm: false
+repo_name: scoop-bucket-skills
+

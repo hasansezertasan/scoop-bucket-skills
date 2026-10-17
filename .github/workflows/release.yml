@@ -1,81 +1,164 @@
-name: release
-# release-please owns CHANGELOG.md, the release manifest and the pyproject.toml
-# version. The plugin manifests derive their version from pyproject.toml, so
-# this workflow regenerates them on the release PR branch and validates the
-# result; see CONTRIBUTING.md.
+name: Release
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
 
-# Preserve running tag/release operations; queued runs can still be superseded.
+permissions: {}
+
+# Preserve a running tag or release operation; a queued run can still be
+# superseded by a newer one.
 concurrency:
   group: release
   cancel-in-progress: false
 
-permissions: {}
-
 jobs:
-  validate:
-    if: github.ref == 'refs/heads/main'
+  check:
     permissions:
       contents: read
     uses: ./.github/workflows/check.yml
 
-  release-please:
-    needs: validate
+  guard:
+    needs: check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     permissions:
-      contents: write
-      issues: write
-      pull-requests: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - run: node scripts/release-guard.mjs --private
+
+  release-please:
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write # release-please manages PR labels through the Issues API
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      prs_created: ${{ steps.release.outputs.prs_created }}
+      pr_branch: ${{ fromJSON(steps.release.outputs.pr || '{}').headBranchName }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
       # release-please can otherwise release an older pending, failed merge on a
-      # later green push. Require a single pending release at the validated SHA.
-      - name: Select the validated release merge
-        id: release-merge
+      # later green push. Require a single pending release merged as this commit.
+      - id: release-merge
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
         run: |
           gh api --paginate --slurp "repos/$REPO/pulls?state=closed&base=main&per_page=100" > "$RUNNER_TEMP/closed-prs.json"
-          python3 scripts/release_guard.py --pulls "$RUNNER_TEMP/closed-prs.json" --sha "$SHA" >> "$GITHUB_OUTPUT"
-      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
-        id: release-please
+          node scripts/release-merge.mjs --pulls "$RUNNER_TEMP/closed-prs.json" --sha "$SHA" >> "$GITHUB_OUTPUT"
+      # Runs with the implicit GITHUB_TOKEN on purpose: a PAT or App token would
+      # be a standing credential with write access to main. The cost is that
+      # events created with GITHUB_TOKEN start no workflow runs, so the release
+      # PR reports no required checks until someone closes and reopens it
+      # (check.yml runs on `reopened` and can be dispatched on the release
+      # branch). The repository setting "Allow GitHub Actions to create and
+      # approve pull requests" must also be on.
+      - id: release
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
-          config-file: .config/release-please-config.json
-          manifest-file: .config/release-please-manifest.json
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
           skip-github-release: ${{ steps.release-merge.outputs.is-release-merge != 'true' }}
-      # GITHUB_TOKEN-created PRs do not start PR workflows. Validate the
-      # regenerated tree here, and support a manual check run for PR status.
-      - name: Check out the release PR branch
-        if: steps.release-please.outputs.prs_created == 'true'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+  # release-please bumps package.json and the plugin manifests, but cannot update
+  # the hash ledger (.ai-rulez-generated.json) that `npm run check` verifies, so
+  # the release PR would fail its own check. Regenerate the output on the release
+  # branch. The work is split so that no code from a dependency runs next to a
+  # write token: `regenerate` installs and runs the scripts with read-only access
+  # and hands over a patch; `push` holds the write token and only applies it.
+  regenerate:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.prs_created == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.regenerate.outputs.changed }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ fromJSON(steps.release-please.outputs.pr || '{}').headBranchName }}
-      - name: Install python and ai-rulez
-        if: steps.release-please.outputs.prs_created == 'true'
-        uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+          ref: ${{ needs.release-please.outputs.pr_branch }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          cache: false
-      - name: Regenerate, validate, and commit release packaging
-        if: steps.release-please.outputs.prs_created == 'true'
-        env:
-          PR: ${{ steps.release-please.outputs.pr }}
+          node-version-file: .node-version
+      - id: regenerate
         run: |
-          BRANCH=$(jq -er .headBranchName <<< "$PR")
-          mise run agents:generate
-          mise run check
-          git add -- AGENTS.md skills .claude-plugin .codex-plugin .agents/plugins .ai-rulez-generated.json .ai-rulez/.generated-manifest.json
+          npm ci
+          npm run generate
+          # Dependency code ran above and may have staged files; start from a
+          # clean index so only the paths below can enter the commit.
+          git reset -q
+          # Only generated output, and only what exists in this repo.
+          for path in AGENTS.md skills .claude-plugin .codex-plugin .agents .ai-rulez-generated.json .ai-rulez/.generated-manifest.json; do
+            if [ -e "$path" ]; then git add -A -- "$path"; fi
+          done
           if git diff --cached --quiet; then
-            echo "Generated packaging already matches the release version."
+            echo "Generated output already matches the release version."
+            npm run check
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: regenerate plugin packaging for the release"
+          git commit -m "chore: regenerate plugin output for the release"
+          # Check the committed tree: strict validation reports plugin-version
+          # drift (AR961) while generated output differs from HEAD. A failing
+          # check stops the job before anything is handed over.
+          npm run check
+          git diff --binary HEAD~1 HEAD > "$RUNNER_TEMP/regenerate.patch"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - if: ${{ steps.regenerate.outputs.changed == 'true' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: regenerate-patch
+          path: ${{ runner.temp }}/regenerate.patch
+          if-no-files-found: error
+
+  push:
+    needs: [release-please, regenerate]
+    if: ${{ needs.regenerate.outputs.changed == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # This job runs no npm and no repository script: it applies a patch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.pr_branch }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: regenerate-patch
+          path: ${{ runner.temp }}
+      - env:
+          BRANCH: ${{ needs.release-please.outputs.pr_branch }}
+        run: |
+          patch="$RUNNER_TEMP/regenerate.patch"
+          # Refuse anything that is not generated output.
+          allowed='^(AGENTS\.md$|skills/|\.claude-plugin/|\.codex-plugin/|\.agents/|\.ai-rulez-generated\.json$|\.ai-rulez/\.generated-manifest\.json$)'
+          while IFS=$'\t' read -r _ _ path; do
+            if [[ ! "$path" =~ $allowed ]]; then
+              echo "Refusing to push: $path is not generated output" >&2
+              exit 1
+            fi
+          done < <(git apply --numstat "$patch")
+          git apply --index "$patch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate plugin output for the release"
           git push origin "HEAD:$BRANCH"
