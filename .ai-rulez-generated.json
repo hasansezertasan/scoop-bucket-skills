@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:ae7bf3f6ec9bb7d5269cdbc726636c95d3935372730d97741abf5d22f4209fbc",
+  "source_hash": "blake3:fd4dad9a4a5cf4701471f11f4a5548e68043d008a5193663e5d32d03af71a429",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -16,6 +16,10 @@
     },
     ".codex-plugin/plugin.json": {
       "content_hash": "blake3:19b7044c44e0e4884a69b85712834fd8e153277f72ef495d36b20ba055d3e080",
+      "mode": "0644"
+    },
+    "package.json": {
+      "content_hash": "blake3:3260d6fafde05d42281791bff7048c0da640ffe1c6c239f4c741c892daa63b6e",
       "mode": "0644"
     },
     "skills/scoop-add/SKILL.md": {
@@ -142,5 +146,17 @@
       "content_hash": "blake3:694e0d59fd95e8cbd3cfd92f5e5949ad2d39654fa5b14fba0ba5dda13a5863b4",
       "mode": "0644"
     }
+  },
+  "managed": {
+    "package.json": [
+      "name",
+      "version",
+      "description",
+      "author",
+      "repository",
+      "keywords",
+      "pi",
+      "files"
+    ]
   }
 }
