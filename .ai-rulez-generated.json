@@ -1,21 +1,21 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:17c230842877bf4622941a590803560ef38bf41cb631aa55906623ae5eb6ef7e",
+  "source_hash": "blake3:ae7bf3f6ec9bb7d5269cdbc726636c95d3935372730d97741abf5d22f4209fbc",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
       "mode": "0644"
     },
     ".claude-plugin/marketplace.json": {
-      "content_hash": "blake3:ba1c4964dc42beee7172f3283ed80161fd9ec77215c30d19a0a58043de100ca3",
+      "content_hash": "blake3:4ce2f92e53c823bfff949209fa20116b0ddc22933f941f5c4170f42da1dffa6f",
       "mode": "0644"
     },
     ".claude-plugin/plugin.json": {
-      "content_hash": "blake3:ac1fa118ce0f27eabb7b5302ea9c7f1c7b378b4ece0ff982f6d6ce112ed53fc4",
+      "content_hash": "blake3:0c1d0158274b5762d2e93fad77fd9bd773faa7a1793a54c8ffc641ff9a9e29c9",
       "mode": "0644"
     },
     ".codex-plugin/plugin.json": {
-      "content_hash": "blake3:1d6473da793c0263d222ee8fdac9a9f5e9c7b811a122840c7facdaf863a30e5f",
+      "content_hash": "blake3:19b7044c44e0e4884a69b85712834fd8e153277f72ef495d36b20ba055d3e080",
       "mode": "0644"
     },
     "skills/scoop-add/SKILL.md": {
