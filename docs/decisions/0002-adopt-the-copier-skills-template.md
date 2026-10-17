@@ -1,9 +1,9 @@
-# 0002: Adopt the copier-skills template
+# 0002: Adopt the copier-skill-repo template
 
 Status: accepted. Date: 2026-10-16.
 
 This repo's scaffold now comes from the
-[`copier-skills`](https://github.com/hasansezertasan/copier-skills) template and
+[`copier-skill-repo`](https://github.com/hasansezertasan/copier-skill-repo) template and
 is updated with `copier update`. The skills and `CHANGELOG.md` were not touched,
 and `README.md` only had its Development commands updated. This record lists what still differs from a plain render and why;
 it is not updated as the project evolves.
