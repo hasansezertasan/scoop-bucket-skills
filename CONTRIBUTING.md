@@ -27,7 +27,7 @@ differs from `HEAD` and the version has not changed, so `npm run check` fails
 locally until the edit and its generated output are committed. CI validates the
 committed tree and release-please owns the version, so this is expected.
 
-`npm exec -- ai-rulez eval run --mode activation --surface retrieval --no-write` is an offline, informational skill-activation ranking
+`npm run eval` is an offline, informational skill-activation ranking
 over the eval prompts; it is not a merge gate. Model-based evaluations need
 authentication and cost, so keep them out of CI.
 

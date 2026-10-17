@@ -35,8 +35,9 @@ it is not updated as the project evolves.
   AR402 opt-outs (the skills cite files of the bucket they operate on),
   `shared_resources = ["references"]` and the plugin text stay. Only
   `version_from` changed to `package.json`.
-- **Python unit tests.** `npm test` runs `tests/` and `check.yml` has one extra
-  step for it; the template ships no tests.
+- **Python unit tests and eval.** `npm test` runs `tests/` and `check.yml` has one
+  extra step for it; the template ships no tests. `npm run eval` is the former
+  `agents:eval` task (offline, informational, not a gate).
 - **mise.** `.config/mise.toml` keeps only the tool pins: the Renovate-tracked
   Copier version (kept equal to the one in `scoop-bucket-setup` by
   `tests/test_copier_pin.py`) and the Python version the unit tests use. The
