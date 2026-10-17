@@ -4,7 +4,7 @@ Read [AGENTS.md](AGENTS.md) for source ownership. The
 [maintainer guide](docs/maintainers.md) explains how to use the skills; this
 file explains how to change and release the plugin itself.
 
-This file is owned by the [copier-skills](https://github.com/hasansezertasan/copier-skills) template and is merged on `copier update`. Put repo-specific guidance in `README.md`, which the template never overwrites.
+This file is owned by the [copier-skill-repo](https://github.com/hasansezertasan/copier-skill-repo) template and is merged on `copier update`. Put repo-specific guidance in `README.md`, which the template never overwrites.
 
 ## How the repo works
 
