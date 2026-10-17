@@ -1,17 +1,49 @@
 {
-  "name": "scoop-bucket-skills",
-  "version": "0.2.0",
-  "private": true,
-  "description": "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests.",
-  "license": "MIT",
   "author": {
     "name": "Hasan Sezer Tasan",
     "url": "https://github.com/hasansezertasan"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hasansezertasan/scoop-bucket-skills"
+  "description": "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests.",
+  "devDependencies": {
+    "ai-rulez": "5.3.0"
   },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "skills/scoop-add/SKILL.md",
+    "skills/scoop-add/index.md",
+    "skills/scoop-add/references/contract.md",
+    "skills/scoop-add/scripts/add_manifest.py",
+    "skills/scoop-add/scripts/bucket_repository.py",
+    "skills/scoop-add/scripts/url_fetch.py",
+    "skills/scoop-bucket-setup/SKILL.md",
+    "skills/scoop-bucket-setup/agents/openai.yaml",
+    "skills/scoop-bucket-setup/index.md",
+    "skills/scoop-bucket-setup/references/contract.md",
+    "skills/scoop-bucket-setup/references/setup-cases.md",
+    "skills/scoop-bucket-setup/references/setup-report.md",
+    "skills/scoop-fix-manifest/SKILL.md",
+    "skills/scoop-fix-manifest/index.md",
+    "skills/scoop-fix-manifest/references/contract.md",
+    "skills/scoop-fix-manifest/references/repair-cases.md",
+    "skills/scoop-remove-or-deprecate/SKILL.md",
+    "skills/scoop-remove-or-deprecate/agents/openai.yaml",
+    "skills/scoop-remove-or-deprecate/index.md",
+    "skills/scoop-remove-or-deprecate/references/contract.md",
+    "skills/scoop-remove-or-deprecate/references/lifecycle-cases.md",
+    "skills/scoop-update-triage/SKILL.md",
+    "skills/scoop-update-triage/index.md",
+    "skills/scoop-update-triage/references/contract.md",
+    "skills/scoop-update-triage/references/triage-cases.md",
+    "skills/scoop-update-triage/references/triage-report.md",
+    "skills/scoop-verify/SKILL.md",
+    "skills/scoop-verify/index.md",
+    "skills/scoop-verify/references/contract.md",
+    "skills/scoop-verify/references/verification-cases.md",
+    "skills/scoop-verify/references/verification-report.md",
+    "README.md"
+  ],
   "keywords": [
     "scoop",
     "bucket",
@@ -19,21 +51,29 @@
     "manifest",
     "pi-package"
   ],
+  "license": "MIT",
+  "name": "scoop-bucket-skills",
   "pi": {
     "skills": [
-      "./skills"
-    ]
+      "./skills/scoop-add",
+      "./skills/scoop-bucket-setup",
+      "./skills/scoop-fix-manifest",
+      "./skills/scoop-remove-or-deprecate",
+      "./skills/scoop-update-triage",
+      "./skills/scoop-verify"
+    ],
+    "prompts": []
   },
-  "engines": {
-    "node": ">=22"
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hasansezertasan/scoop-bucket-skills"
   },
   "scripts": {
-    "generate": "ai-rulez generate --no-self-mcp --strict-config && ai-rulez generate --plugin",
     "check": "node scripts/check-repo.mjs && ai-rulez generate --check --no-self-mcp --strict-config && ai-rulez verify --plugin && ai-rulez validate --strict",
-    "test": "python -B -m unittest discover -s tests -v",
-    "eval": "ai-rulez eval run --mode activation --surface retrieval --no-write"
+    "eval": "ai-rulez eval run --mode activation --surface retrieval --no-write",
+    "generate": "ai-rulez generate --no-self-mcp --strict-config && ai-rulez generate --plugin",
+    "test": "python -B -m unittest discover -s tests -v"
   },
-  "devDependencies": {
-    "ai-rulez": "5.3.0"
-  }
+  "version": "0.2.0"
 }

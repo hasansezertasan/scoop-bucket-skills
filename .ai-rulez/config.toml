@@ -50,16 +50,16 @@ self_server = false
 # ship; the contract reference lists them. AR401 and AR402 would flag every such reference
 # as a missing path or resource.
 #
-# AR9T0 is off for the Antigravity adapter (plugin.json) at the repository root,
-# because Antigravity installs straight from the Git URL. ai-rulez warns (AR9T0)
-# that Codex may load a root plugin.json too; the adapter carries only the plugin
-# name and description, and scripts/check-repo.mjs keeps it equal to the Claude
-# manifest. Tested with codex-cli 0.162.1: a root plugin.json declaring the
-# Antigravity $schema is ignored and Codex falls back to .codex-plugin/plugin.json,
-# but one declaring the portable agent-plugins.org $schema is adopted as Codex's
-# manifest. Keep the Antigravity $schema, and re-test when Codex changes. The same
-# rule also catches .mcp.json and hooks/ at the root, which nothing guards now
-# (copier-skill-repo#43).
+# The Antigravity adapter (plugin.json) must sit at the repository root, because
+# Antigravity installs straight from the Git URL. ai-rulez warns (AR9T0) that
+# Codex may load a root plugin.json too; the adapter carries only the plugin name
+# and description, and scripts/check-repo.mjs keeps it equal to the Claude manifest.
+# Tested with codex-cli 0.162.1: a root plugin.json declaring the Antigravity
+# $schema is ignored and Codex falls back to .codex-plugin/plugin.json, but one
+# declaring the portable agent-plugins.org $schema is adopted as Codex's manifest.
+# Keep the Antigravity $schema, and re-test when Codex changes. AR9T0 also
+# flags .mcp.json, hooks/ and the other host-loaded paths at the root, so
+# scripts/check-repo.mjs rejects those itself; keep its list in step with the rule.
 [lint.severity]
 AR401 = "off"
 AR402 = "off"
@@ -75,7 +75,7 @@ version_from = "package.json"
 description = "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests."
 repository = "https://github.com/hasansezertasan/scoop-bucket-skills"
 keywords = ["scoop", "bucket", "windows", "manifest"]
-runtimes = ["claude", "codex"]
+runtimes = ["claude", "codex", "pi"]
 category = "Productivity"
 # content_root keeps each skill's agents/ metadata in the bundle; shared
 # references are copied into every skill so it stays usable when installed alone.
@@ -99,6 +99,14 @@ developer_name = "Hasan Sezer Tasan"
 # Single-plugin catalogs point at the repository root ("./").
 [plugin.codex]
 marketplace = true
+
+# Pi reads the root skills/ tree. ai-rulez derives the `pi` entry, the
+# `pi-package` keyword and the `files` allowlist in package.json from the skills
+# on disk and rewrites the whole file (sorted keys, expanded arrays), keeping
+# the authored fields (scripts, devDependencies). Edit those, not the derived ones.
+[plugin.pi]
+skills_dir = "skills"
+package_json = "merge"
 
 [marketplace]
 name = "scoop-bucket-skills"
