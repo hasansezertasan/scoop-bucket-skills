@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "scoop-bucket-skills",
+  "description": "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests."
+}
