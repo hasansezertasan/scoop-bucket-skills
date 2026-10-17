@@ -81,7 +81,7 @@ mkdir -p ~/.agents/skills
 for skill in scoop-bucket-skills/skills/*/; do ln -s "$PWD/${skill%/}" ~/.agents/skills/; done
 ```
 
-Alternatively, add the clone's `skills/` directory to OpenCode's configuration. The `skills` array comes from OpenCode's published config schema, which marks the older object form (with a `paths` key) deprecated; OpenCode's documentation pages do not describe this option, so it is unverified in practice:
+Alternatively, add the clone's `skills/` directory to OpenCode's configuration. The `skills` array comes from OpenCode's published config schema, which marks the older object form (with a `paths` key) deprecated; the OpenCode V2 documentation describes this option, but this repository has not verified the configuration route in practice:
 
 ```json
 {
