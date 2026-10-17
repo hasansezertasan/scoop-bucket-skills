@@ -4,8 +4,8 @@ Status: accepted. Date: 2026-10-16.
 
 This repo's scaffold now comes from the
 [`copier-skills`](https://github.com/hasansezertasan/copier-skills) template and
-is updated with `copier update`. The skills, `README.md` and `CHANGELOG.md` were
-not touched. This record lists what still differs from a plain render and why;
+is updated with `copier update`. The skills and `CHANGELOG.md` were not touched,
+and `README.md` only had its Development commands updated. This record lists what still differs from a plain render and why;
 it is not updated as the project evolves.
 
 ## Replaced by the template's version
@@ -42,8 +42,9 @@ it is not updated as the project evolves.
   Copier version (kept equal to the one in `scoop-bucket-setup` by
   `tests/test_copier_pin.py`) and the Python version the unit tests use. The
   tasks are gone; the commands are the npm scripts, and the ai-rulez pin moved
-  to `package.json`. `README.md` still shows the old `mise run` commands, which
-  the adoption was not allowed to change.
+  to `package.json`. The three `mise run` lines in the README's Development
+  section were updated to the npm commands: the one README edit, made because
+  those tasks no longer exist.
 - **`CONTRIBUTING.md` and `docs/installation.md`.** The template's versions plus
   scoop-specific sections (development notes, the skill table, the install
   prompt, the skills-installer route, host-support links). These are
