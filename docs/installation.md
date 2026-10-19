@@ -5,8 +5,8 @@ Scoop Bucket Skills publishes the same skills to five runtimes: Claude Code, Cod
 Your agent can do the install. Copy this prompt into your coding agent:
 
 ```text
-Install the scoop-bucket-skills skills: pick the best installation method for
-you from https://github.com/hasansezertasan/scoop-bucket-skills/blob/main/docs/installation.md
+Install the scoop-bucket-skills skills in project scope: pick the best
+installation method for you from https://github.com/hasansezertasan/scoop-bucket-skills/blob/main/docs/installation.md
 
 Then use its scoop-bucket-setup skill to set up a new Scoop bucket from
 https://github.com/hasansezertasan/copier-scoop-bucket. Ask me for what you need
@@ -40,7 +40,7 @@ Each request below starts a skill. Say what you want in your own words.
 
 You were pointed here to install the skills. Do this:
 
-1. Pick the route in the table below that you can run yourself on your platform. Prefer a route native to your runtime over a manual clone.
+1. Install in project scope, inside the bucket repository: the skills only apply to a bucket, so a user-wide install adds them to every unrelated repository and leaves a copy that nothing updates. Pick the route in the table below that you can run yourself on your platform. Prefer a route native to your runtime over a manual clone.
 2. If a route needs a slash command or an interactive step you cannot run, give the user the exact command and ask them to run it. Do not guess at another command.
 3. Confirm the install with the route's confirm step.
 4. Plugin and skills installs usually load in a new session, not in the conversation that installed them. If the skills are not available to you now, you may read `skills/<name>/SKILL.md` from a clone of this repository (a temporary clone is fine) to do the user's task in this conversation, and tell the user to start a new session so the installed skills load next time. Reading a clone is not an install: it registers nothing for later sessions.
@@ -51,13 +51,15 @@ You were pointed here to install the skills. Do this:
 
 | Runtime | Install | Update | Confirm |
 | --- | --- | --- | --- |
-| Claude Code | `claude plugin marketplace add hasansezertasan/scoop-bucket-skills`, then `claude plugin install scoop-bucket-skills@scoop-bucket-skills` (in a session: `/plugin marketplace add hasansezertasan/scoop-bucket-skills` and `/plugin install scoop-bucket-skills@scoop-bucket-skills`) | `claude plugin marketplace update scoop-bucket-skills`, then `claude plugin update scoop-bucket-skills@scoop-bucket-skills` | `claude plugin list` shows the plugin and its version; run `/reload-plugins` or start a new session to load it |
+| Claude Code | `claude plugin marketplace add hasansezertasan/scoop-bucket-skills`, then `claude plugin install scoop-bucket-skills@scoop-bucket-skills --scope project` (in a session: `/plugin marketplace add hasansezertasan/scoop-bucket-skills` and `/plugin install scoop-bucket-skills@scoop-bucket-skills`, choosing project scope) | `claude plugin marketplace update scoop-bucket-skills`, then `claude plugin update scoop-bucket-skills@scoop-bucket-skills --scope project` | `claude plugin list` shows the plugin and its version with `Scope: project`; run `/reload-plugins` or start a new session to load it |
 | Codex | clone this repository, then `codex plugin marketplace add /absolute/path/to/scoop-bucket-skills` and `codex plugin add scoop-bucket-skills@scoop-bucket-skills`; start a new thread | pull the clone, then `codex plugin add scoop-bucket-skills@scoop-bucket-skills` again, and start a new thread (`marketplace upgrade` applies to Git marketplaces, not a local path; this update route has not been verified) | the plugin appears in Codex's plugin list in a new thread |
 | OpenCode | git only; see [OpenCode](#opencode) | `git pull` in the clone | the skills are offered by OpenCode's `skill` tool in a new session |
 | Pi | `pi install git:github.com/hasansezertasan/scoop-bucket-skills` (not published to npm) | `pi update git:github.com/hasansezertasan/scoop-bucket-skills` (a bare `pi update` updates Pi itself), then restart Pi or reload resources | invoke one of the skills with `/skill:<name>` |
-| A skills installer | `npx skills add hasansezertasan/scoop-bucket-skills -g` ([vercel-labs/skills](https://github.com/vercel-labs/skills); `-g` installs for the user so the skills are there in any project, add `-a <your agent>` to target one agent) | `npx skills update -g` (it filters by installed skill names, which are `scoop-add`, `scoop-bucket-setup` and the other skills here, not the repository name, so run it without names to update all) | `npx skills list -g` shows the six skills |
+| A skills installer | `npx skills add hasansezertasan/scoop-bucket-skills` ([vercel-labs/skills](https://github.com/vercel-labs/skills); run it in the bucket repository so the skills install for that project, add `-a <your agent>` to target one agent) | `npx skills update` (it filters by installed skill names, which are `scoop-add`, `scoop-bucket-setup` and the other skills here, not the repository name, so run it without names to update all) | `npx skills list` shows the six skills |
 | Antigravity | git only; see [Antigravity](#antigravity) | reinstall with the same command, then restart | `agy plugin list` shows the plugin as installed and enabled; restart Antigravity to load it |
 | Manual | clone this repository, then copy `skills/*` into your agent's skills directory (reading `skills/<name>/SKILL.md` from the clone only lets you use the skills in the current conversation; it is not an install) | `git pull` in the clone, then copy `skills/*` again | `for d in <clone>/skills/*/; do diff -r "$d" "<destination>/$(basename "$d")"; done` prints nothing (compare skill by skill: the destination may hold skills from other sources) |
+
+Project scope writes `.claude/settings.json` (`enabledPlugins`) in the bucket; commit it so every contributor gets the same skills and version. A copy installed earlier at user scope stays at its old version beside the project one; remove it with `claude plugin uninstall scoop-bucket-skills@scoop-bucket-skills --scope user`.
 
 The Pi package declares the `pi-package` keyword and a `pi.skills` entry per skill in `package.json`, written by `npm run generate`. To compare an installed version with the latest, use the version in `.claude-plugin/plugin.json` or the repository's latest GitHub release.
 

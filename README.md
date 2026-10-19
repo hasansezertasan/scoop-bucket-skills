@@ -17,11 +17,12 @@ The quickest way is to give your agent the prompt in
 [docs/installation.md](docs/installation.md), which tells it to pick the best
 install route for itself.
 
-Install in Claude Code yourself:
+Install in Claude Code yourself, from inside the bucket repository, at project
+scope (the skills only apply to a bucket):
 
 ```sh
-/plugin marketplace add hasansezertasan/scoop-bucket-skills
-/plugin install scoop-bucket-skills@scoop-bucket-skills
+claude plugin marketplace add hasansezertasan/scoop-bucket-skills
+claude plugin install scoop-bucket-skills@scoop-bucket-skills --scope project
 ```
 
 Install in Codex yourself, from a checkout:
