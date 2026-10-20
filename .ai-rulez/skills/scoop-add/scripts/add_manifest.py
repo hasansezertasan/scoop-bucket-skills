@@ -394,6 +394,8 @@ def github_checkver(repository_url: str, prefix: str) -> dict:
     checkver = {"github": repository_url}
     if prefix not in ("", "v"):
         literal = re.sub(r"([.^$*+?{}\[\]\\|()])", r"\\\1", prefix)
+        # A slash may reach the releases page percent-encoded.
+        literal = literal.replace("/", "(?:/|%2[Ff])")
         checkver["regex"] = f"{literal}([\\d.-]+)"
     return checkver
 
@@ -563,7 +565,9 @@ def add_binary(args: argparse.Namespace) -> None:
             sys.exit("error: --seed can't inspect the archive; pass --bin <name>.exe "
                      "(and --extract-dir if the zip wraps its contents in a folder)")
         version, prefix = _PLACEHOLDER_VERSION, "v"
-        artifacts = group_by_architecture(args.artifact or [f"{token}-windows.zip"])
+        # The default name is ours, so its architecture is not read from the token.
+        artifacts = (group_by_architecture(args.artifact) if args.artifact
+                     else {"64bit": f"{token}-windows.zip"})
         architectures = {arch: _seed_architecture(owner, repo, artifact, args)
                          for arch, artifact in artifacts.items()}
         guesses = "\n".join(
@@ -591,8 +595,10 @@ def add_binary(args: argparse.Namespace) -> None:
                   f"the regex it computes {tag!r} on every bump", file=sys.stderr)
         if not re.fullmatch(r"[\d.-]+", version):
             print(f"warning: version {version!r} has characters beyond digits, dots "
-                  "and dashes, which Scoop's github checkver cannot capture; adjust "
-                  "checkver by hand before merging", file=sys.stderr)
+                  "and dashes, which Scoop's github checkver cannot capture. The tag "
+                  "is split at its first digit, so a digit in the tag's own name "
+                  "(win32-v1.2.3) lands in the version; adjust checkver by hand "
+                  "before merging", file=sys.stderr)
         architectures = {}
         for arch, asset in select_assets(release.get("assets", []), args.artifact).items():
             spec, hint = _release_architecture(asset, prefix, version, token, args)

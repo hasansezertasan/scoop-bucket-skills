@@ -22,4 +22,4 @@ _Avoid_: Version token, version placeholder
 
 **Architecture class**:
 One of `64bit`, `32bit` or `arm64`: the kind of machine a release asset targets, taken from the asset's name.
-_Avoid_: Arch, platform
+_Avoid_: Platform

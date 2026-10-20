@@ -791,7 +791,7 @@ class AddBinaryTest(unittest.TestCase):
         self.assertEqual(written["data"]["version"], "1.0.0")
         self.assertEqual(
             written["data"]["checkver"],
-            {"github": "https://github.com/o/r", "regex": "release/v([\\d.-]+)"},
+            {"github": "https://github.com/o/r", "regex": "release(?:/|%2[Ff])v([\\d.-]+)"},
         )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
@@ -1119,6 +1119,32 @@ class AddBinaryInferenceTest(unittest.TestCase):
             },
         )
         self.assertEqual(data["bin"], "bin/t.exe")
+
+    def test_digit_in_the_tag_name_warns(self) -> None:
+        data, err = self._run("win32-v1.2.3", ["tool.zip"])
+        self.assertIn("first digit", err)
+
+    def test_seed_default_artifact_is_always_64bit(self) -> None:
+        for token in ("win32-disk-imager", "arm-tool", "arm64-foo"):
+            with self.subTest(token=token):
+                args = argparse.Namespace(
+                    repo="o/r", name=token, seed=True, artifact=None,
+                    extract_dir=None, bin="tool.exe",
+                )
+                written = {}
+
+                def fake_write(name: str, data: dict) -> Path:
+                    written["data"] = data
+                    return Path(f"bucket/{name}.json")
+
+                with (
+                    mock.patch.object(am, "fetch_json", return_value=self.META),
+                    mock.patch.object(am, "_write_manifest", side_effect=fake_write),
+                    mock.patch("sys.stdout", io.StringIO()),
+                    mock.patch("sys.stderr", io.StringIO()),
+                ):
+                    am.add_binary(args)
+                self.assertEqual(list(written["data"]["architecture"]), ["64bit"])
 
     def test_seed_classifies_repeated_artifacts(self) -> None:
         args = argparse.Namespace(
