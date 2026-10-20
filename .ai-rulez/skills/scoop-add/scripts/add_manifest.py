@@ -220,8 +220,8 @@ def group_by_architecture(names: list[str]) -> dict[str, str]:
 def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dict]:
     """Pick the release assets to package, keyed by architecture class.
 
-    Honors ``--artifact`` (repeatable) or else takes every ``.zip`` asset that does
-    not name another operating system.
+    Honors ``--artifact`` (repeatable) or else takes the ``.zip`` assets that name
+    Windows, or every one that does not name another operating system when none does.
     """
     if not assets:
         sys.exit("error: the latest release has no downloadable assets; pass --seed "
@@ -234,8 +234,10 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
                          f"{', '.join(by_name)}")
         names = list(wanted)
     else:
-        names = [n for n in by_name
-                 if n.lower().endswith(".zip") and not _NON_WINDOWS.search(n)]
+        zips = [n for n in by_name if n.lower().endswith(".zip")]
+        # An explicit Windows marker beats guessing which other platforms to skip.
+        names = [n for n in zips if _WINDOWS.search(n)] or [
+            n for n in zips if not _NON_WINDOWS.search(n)]
         if not names:
             sys.exit("error: no Windows .zip asset found; pass --artifact to choose "
                      "one of: "
@@ -253,10 +255,11 @@ _X86 = re.compile(
 # 32-bit ARM, which Scoop has no architecture for.
 _ARM32 = re.compile(
     r"(?<![a-z0-9])(?:aarch32|arm(?:32|hf|el|v\d\w*)?)(?![a-z0-9])", re.I)
-# Archives for another operating system, skipped when assets are picked by default.
+# An asset that says it is for Windows, and archives that name another operating system.
+_WINDOWS = re.compile(r"(?<![a-z0-9])(?:win(?:dows)?|msvc)(?![a-z])", re.I)
 _NON_WINDOWS = re.compile(
-    r"(?<![a-z0-9])(?:linux|darwin|mac(?:osx?)?|osx|apple|freebsd|netbsd|openbsd|android)"
-    r"(?![a-z])", re.I)
+    r"(?<![a-z0-9])(?:linux|darwin|mac(?:osx?)?|osx|apple|freebsd|netbsd|openbsd"
+    r"|android|ubuntu|debian|fedora|centos|alpine)(?![a-z])", re.I)
 ARCH_CLASSES = ("64bit", "32bit", "arm64")
 
 

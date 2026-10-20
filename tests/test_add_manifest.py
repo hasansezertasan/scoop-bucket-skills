@@ -315,6 +315,23 @@ class SelectAssetsTest(unittest.TestCase):
         )]
         self.assertEqual(am.select_assets([win, *others], None), {"64bit": win})
 
+    def test_an_explicit_windows_marker_wins_over_unknown_platforms(self) -> None:
+        win = {"name": "tool-windows-x64.zip"}
+        others = [{"name": n} for n in (
+            "tool-solaris-x64.zip", "tool-ubuntu-x64.zip", "tool.zip",
+        )]
+        self.assertEqual(am.select_assets([*others, win], None), {"64bit": win})
+
+    def test_windows_marker_is_not_read_inside_darwin(self) -> None:
+        mac = {"name": "tool-darwin-arm64.zip"}
+        with self.assertRaises(SystemExit):
+            am.select_assets([mac], None)
+
+    def test_distro_named_archives_are_skipped_without_a_windows_marker(self) -> None:
+        plain = {"name": "tool-x64.zip"}
+        distros = [{"name": f"tool-{d}-x64.zip"} for d in ("ubuntu", "debian", "fedora")]
+        self.assertEqual(am.select_assets([plain, *distros], None), {"64bit": plain})
+
     def test_explicit_artifact_may_still_name_a_non_windows_looking_asset(self) -> None:
         mac = {"name": "linuxdeploy-darwin-arm64.zip"}
         self.assertEqual(am.select_assets([mac], ["linuxdeploy-darwin-arm64.zip"]),
