@@ -77,7 +77,7 @@ repairing source/templates. Explain these limits when they affect the incident:
   group, then `replace`) when set; a regex that mixes named and unnamed groups,
   uses .NET-only constructs or does not match fails that manifest, as does an
   `autoupdate` field using `$match<name>`. A bucket rendered from copier-scoop-bucket
-  v0.1.3 or earlier still ignores the regex and needs `copier update`.
+  before v0.2.0 still ignores the regex and needs `copier update`.
   PyPI discovery reads `info.version`, ignoring `jsonpath`. Unsupported discovery
   forms warn and skip, so validate native Scoop checkver separately when needed.
 - Same-version non-placeholder manifests return before downloading or inspecting

@@ -621,7 +621,7 @@ def add_binary(args: argparse.Namespace) -> None:
             print(f"warning: release tag {tag!r} has the prefix {prefix!r}, so the "
                   f"manifest gets a checkver.regex that reads version {version!r}; the "
                   "bucket's updater (scripts/update_manifests.py) reads "
-                  "checkver.regex only from a copier-scoop-bucket release after v0.1.3; an "
+                  "checkver.regex only from copier-scoop-bucket v0.2.0 or later; an "
                   "older bucket ignores it and strips only a lowercase v, so run "
                   f"copier update first or it computes {tag!r} on every bump",
                   file=sys.stderr)
