@@ -385,7 +385,10 @@ def templatize(text: str, version: str, *, required: bool = False) -> str:
     # Match the version as a whole token, not inside a longer one, so a short
     # version such as "3" leaves "win32", "armv3" and "x64" alone. A dotted
     # version is distinctive enough to follow only the digit rule.
-    before = r"(?<!\d)" if "." in target else r"(?:(?<![0-9A-Za-z])|(?<=(?<![0-9A-Za-z])[vV]))"
+    # A whole percent-encoded character (``%23``) before the version is a boundary too.
+    encoded = r"(?<=%[0-9A-Fa-f]{2})"
+    before = (rf"(?:(?<!\d)|{encoded})" if "." in target
+              else rf"(?:(?<![0-9A-Za-z])|{encoded}|(?<=(?<![0-9A-Za-z])[vV]))")
     templated = re.sub(rf"{before}{re.escape(target)}(?!\.?\d)", "$version", text)
     if templated == text:
         print(f"warning: version {version!r} appears in {text!r} only inside a longer "

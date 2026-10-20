@@ -89,6 +89,14 @@ class HelperTest(unittest.TestCase):
         self.assertEqual(am.templatize("v1%2f2", "1/2"), "v$version")
         self.assertEqual(am.templatize("tools/v1/2", "1/2"), "tools/v$version")
 
+    def test_templatize_treats_a_percent_encoded_character_as_a_boundary(self) -> None:
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            self.assertEqual(am.templatize("tool%231.zip", "1"), "tool%23$version.zip")
+            self.assertEqual(
+                am.templatize("tool%231.2.3.zip", "1.2.3"), "tool%23$version.zip"
+            )
+        self.assertEqual(err.getvalue(), "")
+
     def test_templatize_ignores_versions_inside_longer_numbers(self) -> None:
         with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
             self.assertEqual(
@@ -793,7 +801,7 @@ class AddBinaryTest(unittest.TestCase):
         )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
-            "https://github.com/o/r/releases/download/release%23$version/tool%231.zip",
+            "https://github.com/o/r/releases/download/release%23$version/tool%23$version.zip",
         )
 
     def test_add_binary_handles_tag_with_slashes(self) -> None:
