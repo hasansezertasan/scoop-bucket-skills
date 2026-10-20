@@ -135,6 +135,8 @@ class HelperTest(unittest.TestCase):
             "tool-armv7-windows.zip": None,
             "tool-arm32.zip": None,
             "tool-armhf.zip": None,
+            "tool-windows-arm-32bit.zip": None,
+            "tool-windows-armv7-32bit.zip": None,
             "tool_armv7_windows.zip": None,
             "tool-aarch32.zip": None,
         }

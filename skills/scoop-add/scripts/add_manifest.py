@@ -274,10 +274,10 @@ def classify_arch(asset_name: str) -> str | None:
         return "arm64"
     if _X64.search(asset_name):
         return "64bit"
-    if _X86.search(asset_name):
-        return "32bit"
     if _ARM32.search(asset_name):
         return None
+    if _X86.search(asset_name):
+        return "32bit"
     return "64bit"
 
 
