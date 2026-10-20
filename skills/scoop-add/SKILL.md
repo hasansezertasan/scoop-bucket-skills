@@ -27,8 +27,8 @@ manifest can download `scripts/noop.ps1`; pass `--bucket-repository` when that
 cannot be inferred.
 
 For a binary, the script fetches the latest GitHub release, classifies each
-`.zip` asset as `64bit`, `32bit` or `arm64` from its name (no marker means
-`64bit`), and writes one `architecture` block per class, with its own SHA-256
+`.zip` asset that doesn't name another operating system as `64bit`, `32bit` or
+`arm64` from its name (no marker means `64bit`), and writes one `architecture` block per class, with its own SHA-256
 and `extract_dir` from inspecting that archive. Use `--artifact`, once per
 asset, when two assets look like the same architecture. The tag's prefix before
 its first digit stays literal in the autoupdate URL, and any prefix other than

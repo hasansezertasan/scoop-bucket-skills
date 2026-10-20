@@ -112,7 +112,10 @@ class HelperTest(unittest.TestCase):
             "tool-win-x86.zip": "32bit",
             "tool-win32.zip": "32bit",
             "tool-i686-windows.zip": "32bit",
+            "tool_windows_386.zip": "32bit",
             "tool-armv7-windows.zip": None,
+            "tool-arm32.zip": None,
+            "tool-armhf.zip": None,
             "tool_armv7_windows.zip": None,
             "tool-aarch32.zip": None,
         }
@@ -290,6 +293,24 @@ class SelectAssetsTest(unittest.TestCase):
         picked = am.select_assets([arm, x86, x64], None)
         self.assertEqual(list(picked), ["64bit", "32bit", "arm64"])
         self.assertEqual(picked, {"64bit": x64, "32bit": x86, "arm64": arm})
+
+    def test_default_selection_skips_non_windows_archives(self) -> None:
+        win, mac, linux = (
+            {"name": "tool-windows-x64.zip"},
+            {"name": "tool-darwin-arm64.zip"},
+            {"name": "tool-linux-x64.zip"},
+        )
+        self.assertEqual(am.select_assets([win, mac, linux], None), {"64bit": win})
+
+    def test_explicit_artifact_may_still_name_a_non_windows_looking_asset(self) -> None:
+        mac = {"name": "linuxdeploy-darwin-arm64.zip"}
+        self.assertEqual(am.select_assets([mac], ["linuxdeploy-darwin-arm64.zip"]),
+                         {"arm64": mac})
+
+    def test_only_non_windows_archives_exit(self) -> None:
+        with self.assertRaises(SystemExit) as ctx:
+            am.select_assets([{"name": "tool-linux-x64.zip"}], None)
+        self.assertIn("tool-linux-x64.zip", str(ctx.exception))
 
     def test_explicit_artifacts(self) -> None:
         a, b, c = {"name": "x.zip"}, {"name": "y-arm64.zip"}, {"name": "z.zip"}
@@ -791,7 +812,7 @@ class AddBinaryTest(unittest.TestCase):
         self.assertEqual(written["data"]["version"], "1.0.0")
         self.assertEqual(
             written["data"]["checkver"],
-            {"github": "https://github.com/o/r", "regex": "release(?:/|%2[Ff])v([\\d.-]+)"},
+            {"github": "https://github.com/o/r", "regex": "(?:/releases/tag/|^)release(?:/|%2[Ff])v([\\d.-]+)"},
         )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
@@ -834,7 +855,7 @@ class AddBinaryTest(unittest.TestCase):
         self.assertEqual(written["data"]["version"], "1.2.3")
         self.assertEqual(
             written["data"]["checkver"],
-            {"github": "https://github.com/o/r", "regex": "V([\\d.-]+)"},
+            {"github": "https://github.com/o/r", "regex": "(?:/releases/tag/|^)V([\\d.-]+)"},
         )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
@@ -1024,7 +1045,7 @@ class AddBinaryInferenceTest(unittest.TestCase):
         self.assertEqual(data["version"], "1.2.3")
         self.assertEqual(
             data["checkver"],
-            {"github": "https://github.com/o/r", "regex": "release-([\\d.-]+)"},
+            {"github": "https://github.com/o/r", "regex": "(?:/releases/tag/|^)release-([\\d.-]+)"},
         )
         self.assertEqual(
             data["autoupdate"]["architecture"]["64bit"]["url"],

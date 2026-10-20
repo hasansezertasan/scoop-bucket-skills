@@ -220,7 +220,8 @@ def group_by_architecture(names: list[str]) -> dict[str, str]:
 def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dict]:
     """Pick the release assets to package, keyed by architecture class.
 
-    Honors ``--artifact`` (repeatable) or else takes every ``.zip`` asset.
+    Honors ``--artifact`` (repeatable) or else takes every ``.zip`` asset that does
+    not name another operating system.
     """
     if not assets:
         sys.exit("error: the latest release has no downloadable assets; pass --seed "
@@ -233,18 +234,25 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
                          f"{', '.join(by_name)}")
         names = list(wanted)
     else:
-        names = [n for n in by_name if n.lower().endswith(".zip")]
+        names = [n for n in by_name
+                 if n.lower().endswith(".zip") and not _NON_WINDOWS.search(n)]
         if not names:
-            sys.exit("error: no .zip asset found; pass --artifact to choose one of: "
+            sys.exit("error: no Windows .zip asset found; pass --artifact to choose "
+                     "one of: "
                      f"{', '.join(by_name)}")
     return {arch: by_name[name] for arch, name in group_by_architecture(names).items()}
 
 
 _ARM64 = re.compile(r"arm64|aarch64", re.I)
 _X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
-_X86 = re.compile(r"i[3-6]86|ia32|win32|x86(?![-_]?64)", re.I)
+_X86 = re.compile(r"i[3-6]86|ia32|win32|x86(?![-_]?64)|(?<!\d)386(?!\d)", re.I)
 # 32-bit ARM, which Scoop has no architecture for.
-_ARM32 = re.compile(r"aarch32|(?<![a-z0-9])arm(?:v\d\w*)?(?![a-z0-9])", re.I)
+_ARM32 = re.compile(
+    r"aarch32|arm(?:32|hf|el)|(?<![a-z0-9])arm(?:v\d\w*)?(?![a-z0-9])", re.I)
+# Archives for another operating system, skipped when assets are picked by default.
+_NON_WINDOWS = re.compile(
+    r"(?<![a-z0-9])(?:linux|darwin|mac(?:os)?|osx|apple|freebsd|netbsd|openbsd|android)"
+    r"(?![a-z0-9])", re.I)
 ARCH_CLASSES = ("64bit", "32bit", "arm64")
 
 
@@ -396,7 +404,9 @@ def github_checkver(repository_url: str, prefix: str) -> dict:
         literal = re.sub(r"([.^$*+?{}\[\]\\|()])", r"\\\1", prefix)
         # A slash may reach the releases page percent-encoded.
         literal = literal.replace("/", "(?:/|%2[Ff])")
-        checkver["regex"] = f"{literal}([\\d.-]+)"
+        # Scoop applies the regex to the tag name (API mode) or to the whole releases
+        # page (HTML mode), so anchor it to the tag link or the start of the tag.
+        checkver["regex"] = f"(?:/releases/tag/|^){literal}([\\d.-]+)"
     return checkver
 
 
