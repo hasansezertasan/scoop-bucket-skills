@@ -245,10 +245,11 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
     return {arch: by_name[name] for arch, name in group_by_architecture(names).items()}
 
 
-_ARM64 = re.compile(r"arm64|aarch64", re.I)
-_X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
+# Markers must start a token, so a project name such as ``charm64`` is not read as one.
+_ARM64 = re.compile(r"(?<![a-z0-9])(?:arm64|aarch64)", re.I)
+_X64 = re.compile(r"(?<![a-z0-9])(?:x64|amd64|x86[-_]?64|win64)", re.I)
 _X86 = re.compile(
-    r"i[3-6]86|ia32|win32|x86(?![-_]?64)|(?<!\d)386(?!\d)"
+    r"(?<![a-z0-9])(?:i[3-6]86|ia32|win32|x86(?![-_]?64))|(?<!\d)386(?!\d)"
     r"|(?<![a-z0-9])x32(?![a-z0-9])|(?<!\d)32[-_]?bit",
     re.I,
 )
