@@ -75,5 +75,5 @@
     "generate": "ai-rulez generate --no-self-mcp --strict-config && ai-rulez generate --plugin",
     "test": "python -B -m unittest discover -s tests -v"
   },
-  "version": "0.2.0"
+  "version": "0.3.0"
 }

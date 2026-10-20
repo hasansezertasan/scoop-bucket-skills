@@ -1,25 +1,25 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:1ba0f30ad383b24b4c7e68482e167ee6038a48b6db7507c6f7bf7b91cc7e4a3b",
+  "source_hash": "blake3:19ad167c731751122b57c0820d217cb923d88cee2683502faf1917032f6cfd00",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
       "mode": "0644"
     },
     ".claude-plugin/marketplace.json": {
-      "content_hash": "blake3:4ce2f92e53c823bfff949209fa20116b0ddc22933f941f5c4170f42da1dffa6f",
+      "content_hash": "blake3:ff705f9086b2d87ee0bd1398709e93b827de37a12e5da77c050dfd276e6323e2",
       "mode": "0644"
     },
     ".claude-plugin/plugin.json": {
-      "content_hash": "blake3:0c1d0158274b5762d2e93fad77fd9bd773faa7a1793a54c8ffc641ff9a9e29c9",
+      "content_hash": "blake3:ff022a46b1a8d4689fdb766a6cc26fe202f2d1829702e6f9d940ad04b3e5eeed",
       "mode": "0644"
     },
     ".codex-plugin/plugin.json": {
-      "content_hash": "blake3:19b7044c44e0e4884a69b85712834fd8e153277f72ef495d36b20ba055d3e080",
+      "content_hash": "blake3:bb0fc3591236ced9bd38c2185bce2c120691bdf486b20232753d66d6bd45ecc0",
       "mode": "0644"
     },
     "package.json": {
-      "content_hash": "blake3:3260d6fafde05d42281791bff7048c0da640ffe1c6c239f4c741c892daa63b6e",
+      "content_hash": "blake3:b74fc52c4ad09a87ca1baf1acf7dd0f520148faece36fc868d20a0e25ae3d0c9",
       "mode": "0644"
     },
     "skills/scoop-add/SKILL.md": {

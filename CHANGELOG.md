@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/hasansezertasan/scoop-bucket-skills/compare/v0.2.0...v0.3.0) (2026-10-20)
+
+
+### Features
+
+* **scoop-add:** infer tag prefix, version and architecture ([#27](https://github.com/hasansezertasan/scoop-bucket-skills/issues/27)) ([f0893c9](https://github.com/hasansezertasan/scoop-bucket-skills/commit/f0893c98ab68b5f6fd2055ce87793417409f9d28))
+
 ## [0.2.0](https://github.com/hasansezertasan/scoop-bucket-skills/compare/scoop-bucket-skills-v0.1.0...scoop-bucket-skills-v0.2.0) (2026-10-17)
 
 
