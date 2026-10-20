@@ -33,8 +33,9 @@ means `64bit`), and writes one `architecture` block per class, with its own SHA-
 and `extract_dir` from inspecting that archive. Use `--artifact`, once per
 asset, when two assets look like the same architecture. The tag's prefix before
 its first digit stays literal in the autoupdate URL, and any prefix other than
-`v` adds a `checkver.regex`; the bucket's updater ignores that regex, so check
-the warning it prints. Before the first release, use `--seed` with `--bin` and
+`v` adds a `checkver.regex`; only a bucket whose updater is from
+copier-scoop-bucket v0.2.0 or later reads it (older ones need `copier update`), so
+check the warning it prints. Before the first release, use `--seed` with `--bin` and
 verify the assumed tag and filename pattern later.
 
 After scaffolding:

@@ -37,7 +37,9 @@ lower upstream version rather than forcing a downgrade.
   release and yields the version used by the concrete asset URL.
 - Separate Scoop's native `checkver` behavior from this repository's updater.
   The updater supports `checkver.github` and PyPI `checkver.url`; it strips a
-  leading `v` before a digit from GitHub tags, ignores a GitHub regex, and reads
+  leading `v` or `V` before a digit from GitHub tags, or applies a GitHub
+  `checkver.regex` and `replace` when set (a regex outside that subset fails the
+  manifest; buckets from copier-scoop-bucket before v0.2.0 ignore it), and reads
   PyPI `info.version` regardless of `jsonpath`. An updater run cannot prove a
   native regex or JSON path works. Test the native matcher against the response;
   if Scoop/PowerShell is unavailable, report that check pending.

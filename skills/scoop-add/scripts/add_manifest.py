@@ -620,9 +620,11 @@ def add_binary(args: argparse.Namespace) -> None:
         if prefix not in ("", "v"):
             print(f"warning: release tag {tag!r} has the prefix {prefix!r}, so the "
                   f"manifest gets a checkver.regex that reads version {version!r}; the "
-                  "bucket's updater (scripts/update_manifests.py) ignores "
-                  "checkver.regex and strips only a lowercase v, so until it honours "
-                  f"the regex it computes {tag!r} on every bump", file=sys.stderr)
+                  "bucket's updater (scripts/update_manifests.py) reads "
+                  "checkver.regex only from copier-scoop-bucket v0.2.0 or later; an "
+                  "older bucket ignores it and strips only a lowercase v, so run "
+                  f"copier update first or it computes {tag!r} on every bump",
+                  file=sys.stderr)
         if not re.fullmatch(r"[\d.-]+", version):
             print(f"warning: version {version!r} has characters beyond digits, dots "
                   "and dashes, which Scoop's github checkver cannot capture. The tag "

@@ -79,7 +79,12 @@ Use it for supported version bumps or verified placeholder activation after
 repairing source/templates. Explain these limits when they affect the incident:
 
 - GitHub discovery uses `checkver.github` and the latest release tag, stripping
-  only a leading `v` before a digit; it ignores native `checkver.regex`.
+  a leading `v` or `V` before a digit, or applying `checkver.regex` (first
+  group, then `replace`) when set; a regex that mixes named and unnamed groups,
+  uses an unsupported .NET-only construct (`\k<name>`, `(?'name'...)`, balancing
+  groups) or does not match fails that manifest, as does an `autoupdate` field
+  using a `$match` variable such as `$matchChannel`. Plain `(?<name>...)` groups work. A bucket rendered from copier-scoop-bucket
+  before v0.2.0 still ignores the regex and needs `copier update`.
   PyPI discovery reads `info.version`, ignoring `jsonpath`. Unsupported discovery
   forms warn and skip, so validate native Scoop checkver separately when needed.
 - Same-version non-placeholder manifests return before downloading or inspecting
