@@ -1,6 +1,6 @@
 {
   "name": "scoop-bucket-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Skills for operating a Scoop bucket: set it up, then add, fix, triage, remove, and verify manifests.",
   "author": {
     "name": "Hasan Sezer Tasan",
