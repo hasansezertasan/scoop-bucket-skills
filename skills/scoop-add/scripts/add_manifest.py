@@ -397,6 +397,16 @@ def split_tag(tag: str) -> tuple[str, str]:
     return (tag[:match.start()], tag[match.start():]) if match else ("", tag)
 
 
+def _prefix_char_pattern(char: str) -> str:
+    """Match ``char`` as written or, when a URL encodes it, percent-encoded."""
+    raw = re.sub(r"([.^$*+?{}\[\]\\|()])", r"\\\1", char)
+    encoded = quote(char, safe="")
+    if encoded == char:
+        return raw
+    hex_case = "".join(f"[{c}{c.lower()}]" if c.isalpha() else c for c in encoded)
+    return f"(?:{raw}|{hex_case})"
+
+
 def github_checkver(repository_url: str, prefix: str) -> dict:
     """Build the ``checkver`` block; add a regex unless Scoop's default reads the tag.
 
@@ -405,9 +415,7 @@ def github_checkver(repository_url: str, prefix: str) -> dict:
     """
     checkver = {"github": repository_url}
     if prefix not in ("", "v"):
-        literal = re.sub(r"([.^$*+?{}\[\]\\|()])", r"\\\1", prefix)
-        # A slash may reach the releases page percent-encoded.
-        literal = literal.replace("/", "(?:/|%2[Ff])")
+        literal = "".join(_prefix_char_pattern(char) for char in prefix)
         # Scoop applies the regex to the tag name (API mode) or to the whole releases
         # page (HTML mode), so anchor it to the tag link or the start of the tag.
         checkver["regex"] = f"(?:/releases/tag/|^){literal}([\\d.-]+)"

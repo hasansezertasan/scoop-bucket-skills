@@ -1066,6 +1066,18 @@ class AddBinaryInferenceTest(unittest.TestCase):
         )
         self.assertIn("checkver.regex", err)
 
+    def test_regex_accepts_every_url_encoded_prefix_character(self) -> None:
+        data, _ = self._run("release#1", ["tool.zip"])
+        self.assertEqual(
+            data["checkver"]["regex"],
+            "(?:/releases/tag/|^)release(?:#|%23)([\\d.-]+)",
+        )
+        data, _ = self._run("my app-1.0", ["tool.zip"])
+        self.assertEqual(
+            data["checkver"]["regex"],
+            "(?:/releases/tag/|^)my(?: |%20)app-([\\d.-]+)",
+        )
+
     def test_plain_and_lowercase_v_tags_need_no_regex(self) -> None:
         for tag in ("1.2.3", "v1.2.3"):
             with self.subTest(tag=tag):
