@@ -100,27 +100,43 @@ class HelperTest(unittest.TestCase):
             self.assertEqual(am.templatize("x64-1.2.3.1.zip", "1.2.3"), "x64-1.2.3.1.zip")
         self.assertIn("longer number", err.getvalue())
 
-    def test_warn_if_not_x64_flags_arm_and_32bit_only(self) -> None:
-        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
-            am.warn_if_not_x64("tool-x86_64-windows.zip")
-            am.warn_if_not_x64("tool-windows-amd64.zip")
-            am.warn_if_not_x64("tool.zip")
-            am.warn_if_not_x64("tool-win32-x64.zip")
-            am.warn_if_not_x64("charm-windows.zip")
-            self.assertEqual(err.getvalue(), "")
-            am.warn_if_not_x64("tool-windows-arm64.zip")
-            am.warn_if_not_x64("tool-win-x86.zip")
-            am.warn_if_not_x64("tool-armv7-windows.zip")
-            am.warn_if_not_x64("tool_armv7_windows.zip")
-            am.warn_if_not_x64("tool-aarch32.zip")
-            am.warn_if_not_x64("tool-win32.zip")
-        self.assertEqual(err.getvalue().count("non-x64"), 6)
+    def test_classify_arch_reads_the_architecture_from_the_asset_name(self) -> None:
+        cases = {
+            "tool-x86_64-windows.zip": "64bit",
+            "tool-windows-amd64.zip": "64bit",
+            "tool-win32-x64.zip": "64bit",
+            "tool-windows.zip": "64bit",
+            "charm-windows.zip": "64bit",
+            "tool-windows-arm64.zip": "arm64",
+            "tool-aarch64-pc-windows-msvc.zip": "arm64",
+            "tool-win-x86.zip": "32bit",
+            "tool-win32.zip": "32bit",
+            "tool-i686-windows.zip": "32bit",
+            "tool-armv7-windows.zip": None,
+            "tool_armv7_windows.zip": None,
+            "tool-aarch32.zip": None,
+        }
+        for name, expected in cases.items():
+            with self.subTest(name=name):
+                self.assertEqual(am.classify_arch(name), expected)
 
-    def test_templatize_warns_when_absent(self) -> None:
-        buf = io.StringIO()
-        with mock.patch("sys.stderr", buf):
+    def test_templatize_is_silent_when_the_version_is_absent(self) -> None:
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
             self.assertEqual(am.templatize("static.zip", "1.2.3"), "static.zip")
-        self.assertIn("won't auto-update", buf.getvalue())
+        self.assertEqual(err.getvalue(), "")
+
+    def test_templatize_warns_when_a_required_version_is_absent(self) -> None:
+        with mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            self.assertEqual(
+                am.templatize("static", "1.2.3", required=True), "static"
+            )
+        self.assertIn("won't auto-update", err.getvalue())
+
+    def test_templatize_replaces_every_occurrence(self) -> None:
+        self.assertEqual(
+            am.templatize("tool-1.2.3/tool-1.2.3.exe", "1.2.3"),
+            "tool-$version/tool-$version.exe",
+        )
 
     def test_noop_source_uses_bucket_repository_and_file_hash(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -260,22 +276,47 @@ class InspectZipTest(unittest.TestCase):
                 os.unlink(path)
 
 
-class SelectZipTest(unittest.TestCase):
-    def test_lone_zip(self) -> None:
+class SelectAssetsTest(unittest.TestCase):
+    def test_lone_zip_is_classified(self) -> None:
         asset = {"name": "app-windows.zip"}
-        self.assertIs(am.select_zip([asset, {"name": "notes.txt"}], None), asset)
+        self.assertEqual(
+            am.select_assets([asset, {"name": "notes.txt"}], None), {"64bit": asset}
+        )
 
-    def test_explicit_artifact(self) -> None:
-        a, b = {"name": "x.zip"}, {"name": "y.zip"}
-        self.assertIs(am.select_zip([a, b], "y.zip"), b)
+    def test_assets_are_keyed_by_architecture_in_class_order(self) -> None:
+        arm, x64, x86 = (
+            {"name": "a-arm64.zip"}, {"name": "a-x64.zip"}, {"name": "a-x86.zip"},
+        )
+        picked = am.select_assets([arm, x86, x64], None)
+        self.assertEqual(list(picked), ["64bit", "32bit", "arm64"])
+        self.assertEqual(picked, {"64bit": x64, "32bit": x86, "arm64": arm})
 
-    def test_multiple_zips_without_choice_exits(self) -> None:
+    def test_explicit_artifacts(self) -> None:
+        a, b, c = {"name": "x.zip"}, {"name": "y-arm64.zip"}, {"name": "z.zip"}
+        self.assertEqual(
+            am.select_assets([a, b, c], ["x.zip", "y-arm64.zip"]),
+            {"64bit": a, "arm64": b},
+        )
+
+    def test_two_assets_in_one_class_exit_naming_them(self) -> None:
+        with self.assertRaises(SystemExit) as ctx:
+            am.select_assets([{"name": "a.zip"}, {"name": "b.zip"}], None)
+        self.assertIn("a.zip", str(ctx.exception))
+        self.assertIn("b.zip", str(ctx.exception))
+        self.assertIn("--artifact", str(ctx.exception))
+
+    def test_unsupported_architecture_exits(self) -> None:
+        with self.assertRaises(SystemExit) as ctx:
+            am.select_assets([{"name": "a-armv7.zip"}], None)
+        self.assertIn("a-armv7.zip", str(ctx.exception))
+
+    def test_unknown_artifact_exits(self) -> None:
         with self.assertRaises(SystemExit):
-            am.select_zip([{"name": "a.zip"}, {"name": "b.zip"}], None)
+            am.select_assets([{"name": "a.zip"}], ["nope.zip"])
 
     def test_no_assets_exits(self) -> None:
         with self.assertRaises(SystemExit):
-            am.select_zip([], None)
+            am.select_assets([], None)
 
 
 class RenderTest(unittest.TestCase):
@@ -330,11 +371,14 @@ class RenderTest(unittest.TestCase):
                 description="Demo",
                 license_id="MIT",
                 version="1.0.0",
-                download_url="https://github.com/o/widget/releases/download/v1.0.0/widget-windows.zip",
-                sha256="a" * 64,
-                extract_dir="widget",
-                executable="widget.exe",
-                autoupdate_url="https://github.com/o/widget/releases/download/v$version/widget-windows.zip",
+                checkver={"github": "https://github.com/o/widget"},
+                architectures={"64bit": am.ArchitectureSpec(
+                    download_url="https://github.com/o/widget/releases/download/v1.0.0/widget-windows.zip",
+                    sha256="a" * 64,
+                    extract_dir="widget",
+                    executable="widget.exe",
+                    autoupdate_url="https://github.com/o/widget/releases/download/v$version/widget-windows.zip",
+                )},
             )
         )
         self.assertEqual(
@@ -355,11 +399,14 @@ class RenderTest(unittest.TestCase):
                 description="Demo",
                 license_id="MIT",
                 version="1.0.0",
-                download_url="u",
-                sha256="a" * 64,
-                extract_dir=None,
-                executable="tool.exe",
-                autoupdate_url="u",
+                checkver={"github": "https://github.com/o/tool"},
+                architectures={"64bit": am.ArchitectureSpec(
+                    download_url="u",
+                    sha256="a" * 64,
+                    extract_dir=None,
+                    executable="tool.exe",
+                    autoupdate_url="u",
+                )},
             )
         )
         self.assertNotIn("extract_dir", data["architecture"]["64bit"])
@@ -372,13 +419,16 @@ class RenderTest(unittest.TestCase):
                 description="Demo",
                 license_id="MIT",
                 version="1.2.3",
-                download_url="https://github.com/o/widget/releases/download/v1.2.3/widget-1.2.3.zip",
-                sha256="a" * 64,
-                extract_dir="widget-1.2.3",
-                executable="widget-1.2.3.exe",
-                autoupdate_url="https://github.com/o/widget/releases/download/v$version/widget-$version.zip",
-                autoupdate_extract_dir="widget-$version",
-                autoupdate_bin="widget-$version.exe",
+                checkver={"github": "https://github.com/o/widget"},
+                architectures={"64bit": am.ArchitectureSpec(
+                    download_url="https://github.com/o/widget/releases/download/v1.2.3/widget-1.2.3.zip",
+                    sha256="a" * 64,
+                    extract_dir="widget-1.2.3",
+                    executable="widget-1.2.3.exe",
+                    autoupdate_url="https://github.com/o/widget/releases/download/v$version/widget-$version.zip",
+                    autoupdate_extract_dir="widget-$version",
+                    autoupdate_bin="widget-$version.exe",
+                )},
             )
         )
         self.assertEqual(data["architecture"]["64bit"]["extract_dir"], "widget-1.2.3")
@@ -543,7 +593,7 @@ class AddBinaryTest(unittest.TestCase):
     def test_seed_templatizes_versioned_artifact(self) -> None:
         meta = {"html_url": "https://github.com/o/r", "description": "tool"}
         args = argparse.Namespace(
-            repo="o/r", name="tool", seed=True, artifact="widget-0.0.0.zip",
+            repo="o/r", name="tool", seed=True, artifact=["widget-0.0.0.zip"],
             extract_dir=None, bin="tool.exe",
         )
         written = {}
@@ -596,7 +646,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool.zip",
+            artifact=["tool.zip"],
             extract_dir="dist",
             bin=None,
         )
@@ -632,7 +682,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool.zip",
+            artifact=["tool.zip"],
             extract_dir="other",
             bin=None,
         )
@@ -663,7 +713,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool#1.zip",
+            artifact=["tool#1.zip"],
             extract_dir=None,
             bin="tool.exe",
         )
@@ -692,7 +742,7 @@ class AddBinaryTest(unittest.TestCase):
         )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
-            "https://github.com/o/r/releases/download/$version/tool%231.zip",
+            "https://github.com/o/r/releases/download/release%23$version/tool%231.zip",
         )
 
     def test_add_binary_handles_tag_with_slashes(self) -> None:
@@ -710,7 +760,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool.zip",
+            artifact=["tool.zip"],
             extract_dir=None,
             bin="tool.exe",
         )
@@ -738,12 +788,17 @@ class AddBinaryTest(unittest.TestCase):
             "https://github.com/o/r/releases/download/release/v1.0.0/tool.zip",
         )
         self.assertIn("checkver", err.getvalue())
+        self.assertEqual(written["data"]["version"], "1.0.0")
+        self.assertEqual(
+            written["data"]["checkver"],
+            {"github": "https://github.com/o/r", "regex": "release/v([\\d.-]+)"},
+        )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
-            "https://github.com/o/r/releases/download/$version/tool.zip",
+            "https://github.com/o/r/releases/download/release/v$version/tool.zip",
         )
 
-    def test_add_binary_leaves_uppercase_tag_whole_and_warns(self) -> None:
+    def test_add_binary_emits_a_regex_for_an_uppercase_tag(self) -> None:
         meta = {"html_url": "https://github.com/o/r", "description": "tool"}
         release = {
             "tag_name": "V1.2.3",
@@ -755,7 +810,7 @@ class AddBinaryTest(unittest.TestCase):
             ],
         }
         args = argparse.Namespace(
-            repo="o/r", name="tool", seed=False, artifact="tool.zip",
+            repo="o/r", name="tool", seed=False, artifact=["tool.zip"],
             extract_dir=None, bin="tool.exe",
         )
         written = {}
@@ -776,10 +831,14 @@ class AddBinaryTest(unittest.TestCase):
         ):
             am.add_binary(args)
 
-        self.assertEqual(written["data"]["version"], "V1.2.3")
+        self.assertEqual(written["data"]["version"], "1.2.3")
+        self.assertEqual(
+            written["data"]["checkver"],
+            {"github": "https://github.com/o/r", "regex": "V([\\d.-]+)"},
+        )
         self.assertEqual(
             written["data"]["autoupdate"]["architecture"]["64bit"]["url"],
-            "https://github.com/o/r/releases/download/$version/tool.zip",
+            "https://github.com/o/r/releases/download/V$version/tool.zip",
         )
         self.assertIn("lowercase v", err.getvalue())
 
@@ -798,7 +857,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool.zip",
+            artifact=["tool.zip"],
             extract_dir=None,
             bin="tool.exe",
         )
@@ -845,7 +904,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="widget",
             seed=False,
-            artifact="widget-1.2.3.zip",
+            artifact=["widget-1.2.3.zip"],
             extract_dir=None,
             bin=None,
         )
@@ -894,7 +953,7 @@ class AddBinaryTest(unittest.TestCase):
             repo="o/r",
             name="tool",
             seed=False,
-            artifact="tool.zip",
+            artifact=["tool.zip"],
             extract_dir=None,
             bin="tool.exe",
         )
@@ -913,6 +972,180 @@ class AddBinaryTest(unittest.TestCase):
         finally:
             if os.path.exists(path):
                 os.unlink(path)
+
+class AddBinaryInferenceTest(unittest.TestCase):
+    """`add_binary` end to end with the network and archives stubbed."""
+
+    META = {"html_url": "https://github.com/o/r", "description": "tool"}
+
+    def _run(self, tag, asset_names, *, bin=None, extract_dir=None, artifact=None,
+             archives=None, seed=False):
+        """Return ``(manifest, stderr)``; ``archives`` maps asset name -> (dir, exe)."""
+        archives = archives or {}
+        base = f"https://github.com/o/r/releases/download/{tag}"
+        release = {
+            "tag_name": tag,
+            "assets": [
+                {"name": n, "browser_download_url": f"{base}/{n}"} for n in asset_names
+            ],
+        }
+        args = argparse.Namespace(
+            repo="o/r", name="tool", seed=seed, artifact=artifact,
+            extract_dir=extract_dir, bin=bin,
+        )
+        written = {}
+
+        def fake_write(name: str, data: dict) -> Path:
+            written["data"] = data
+            return Path(f"bucket/{name}.json")
+
+        def fake_inspect(path: str, token: str):
+            found_dir, exe = archives.get(path.rsplit("/", 1)[-1], (None, "tool.exe"))
+            return found_dir, exe, ""
+
+        with (
+            mock.patch.object(am, "fetch_json", side_effect=[self.META, release]),
+            mock.patch.object(am, "download_zip", side_effect=lambda url: url),
+            mock.patch.object(
+                am, "sha256_of_file",
+                side_effect=lambda path: hashlib.sha256(path.encode()).hexdigest(),
+            ),
+            mock.patch.object(am, "inspect_zip", side_effect=fake_inspect),
+            mock.patch.object(am, "_write_manifest", side_effect=fake_write),
+            mock.patch("os.unlink"),
+            mock.patch("sys.stdout", io.StringIO()),
+            mock.patch("sys.stderr", new_callable=io.StringIO) as err,
+        ):
+            am.add_binary(args)
+        return written["data"], err.getvalue()
+
+    def test_prefixed_tag_gets_a_checkver_regex_and_a_literal_prefix(self) -> None:
+        data, err = self._run("release-1.2.3", ["tool.zip"])
+        self.assertEqual(data["version"], "1.2.3")
+        self.assertEqual(
+            data["checkver"],
+            {"github": "https://github.com/o/r", "regex": "release-([\\d.-]+)"},
+        )
+        self.assertEqual(
+            data["autoupdate"]["architecture"]["64bit"]["url"],
+            "https://github.com/o/r/releases/download/release-$version/tool.zip",
+        )
+        self.assertIn("checkver.regex", err)
+
+    def test_plain_and_lowercase_v_tags_need_no_regex(self) -> None:
+        for tag in ("1.2.3", "v1.2.3"):
+            with self.subTest(tag=tag):
+                data, err = self._run(tag, ["tool.zip"])
+                self.assertEqual(data["version"], "1.2.3")
+                self.assertEqual(data["checkver"], {"github": "https://github.com/o/r"})
+                self.assertNotIn("warning:", err)
+
+    def test_assets_become_one_block_per_architecture(self) -> None:
+        data, _ = self._run(
+            "v1.0.0", ["tool-x64.zip", "tool-x86.zip", "tool-arm64.zip"]
+        )
+        base = "https://github.com/o/r/releases/download"
+        self.assertEqual(list(data["architecture"]), ["64bit", "32bit", "arm64"])
+        self.assertEqual(
+            data["architecture"]["32bit"]["url"], f"{base}/v1.0.0/tool-x86.zip"
+        )
+        self.assertEqual(
+            data["autoupdate"]["architecture"]["arm64"]["url"],
+            f"{base}/v$version/tool-arm64.zip",
+        )
+        hashes = {block["hash"] for block in data["architecture"].values()}
+        self.assertEqual(len(hashes), 3)
+
+    def test_lone_arm64_asset_is_not_labelled_64bit(self) -> None:
+        data, err = self._run("v1.0.0", ["tool-arm64.zip"])
+        self.assertEqual(list(data["architecture"]), ["arm64"])
+        self.assertNotIn("non-x64", err)
+
+    def test_ambiguous_assets_write_nothing(self) -> None:
+        with self.assertRaises(SystemExit):
+            self._run("v1.0.0", ["tool-a.zip", "tool-b.zip"])
+
+    def test_explicit_artifacts_pick_the_architectures(self) -> None:
+        data, _ = self._run(
+            "v1.0.0", ["tool-a.zip", "tool-b.zip", "tool-arm64.zip"],
+            artifact=["tool-b.zip", "tool-arm64.zip"],
+        )
+        self.assertEqual(list(data["architecture"]), ["64bit", "arm64"])
+        self.assertTrue(data["architecture"]["64bit"]["url"].endswith("tool-b.zip"))
+
+    def test_extract_dir_is_inferred_per_architecture(self) -> None:
+        data, _ = self._run(
+            "v1.0.0", ["tool-x64.zip", "tool-arm64.zip"],
+            archives={
+                "tool-x64.zip": ("tool-1.0.0-x64", "tool.exe"),
+                "tool-arm64.zip": ("tool-1.0.0-arm64", "tool.exe"),
+            },
+        )
+        self.assertEqual(
+            data["architecture"]["arm64"]["extract_dir"], "tool-1.0.0-arm64"
+        )
+        self.assertEqual(
+            data["autoupdate"]["architecture"]["64bit"]["extract_dir"],
+            "tool-$version-x64",
+        )
+
+    def test_identical_executables_stay_top_level(self) -> None:
+        data, _ = self._run("v1.0.0", ["tool-x64.zip", "tool-arm64.zip"])
+        self.assertEqual(data["bin"], "tool.exe")
+        self.assertNotIn("bin", data["architecture"]["arm64"])
+
+    def test_differing_executables_move_into_each_architecture(self) -> None:
+        data, _ = self._run(
+            "v1.0.0", ["tool-x64.zip", "tool-arm64.zip"],
+            archives={
+                "tool-x64.zip": (None, "tool.exe"),
+                "tool-arm64.zip": (None, "tool-arm64.exe"),
+            },
+        )
+        self.assertNotIn("bin", data)
+        self.assertNotIn("shortcuts", data)
+        self.assertEqual(data["architecture"]["64bit"]["bin"], "tool.exe")
+        self.assertEqual(data["architecture"]["arm64"]["bin"], "tool-arm64.exe")
+        self.assertEqual(
+            data["architecture"]["arm64"]["shortcuts"], [["tool-arm64.exe", "tool"]]
+        )
+
+    def test_bin_override_applies_to_every_architecture(self) -> None:
+        data, _ = self._run(
+            "v1.0.0", ["tool-x64.zip", "tool-arm64.zip"], bin="bin/t.exe",
+            archives={
+                "tool-x64.zip": (None, "a.exe"),
+                "tool-arm64.zip": (None, "b.exe"),
+            },
+        )
+        self.assertEqual(data["bin"], "bin/t.exe")
+
+    def test_seed_classifies_repeated_artifacts(self) -> None:
+        args = argparse.Namespace(
+            repo="o/r", name="tool", seed=True,
+            artifact=["tool-x64.zip", "tool-arm64.zip"],
+            extract_dir=None, bin="tool.exe",
+        )
+        written = {}
+
+        def fake_write(name: str, data: dict) -> Path:
+            written["data"] = data
+            return Path(f"bucket/{name}.json")
+
+        with (
+            mock.patch.object(am, "fetch_json", return_value=self.META),
+            mock.patch.object(am, "_write_manifest", side_effect=fake_write),
+            mock.patch("sys.stdout", io.StringIO()),
+            mock.patch("sys.stderr", io.StringIO()),
+        ):
+            am.add_binary(args)
+        data = written["data"]
+        self.assertEqual(list(data["architecture"]), ["64bit", "arm64"])
+        self.assertEqual(data["architecture"]["arm64"]["hash"], "0" * 64)
+        self.assertEqual(
+            data["autoupdate"]["architecture"]["arm64"]["url"],
+            "https://github.com/o/r/releases/download/v$version/tool-arm64.zip",
+        )
 
 
 if __name__ == "__main__":
