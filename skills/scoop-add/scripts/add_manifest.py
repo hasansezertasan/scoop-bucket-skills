@@ -236,8 +236,8 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
     else:
         zips = [n for n in by_name if n.lower().endswith(".zip")]
         # An explicit Windows marker beats guessing which other platforms to skip.
-        names = [n for n in zips if _WINDOWS.search(n)] or [
-            n for n in zips if not _NON_WINDOWS.search(n)]
+        windows_only = [n for n in zips if not _NON_WINDOWS.search(n)]
+        names = [n for n in windows_only if _WINDOWS.search(n)] or windows_only
         if not names:
             sys.exit("error: no Windows .zip asset found; pass --artifact to choose "
                      "one of: "
@@ -245,12 +245,13 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
     return {arch: by_name[name] for arch, name in group_by_architecture(names).items()}
 
 
-# Markers must start a token, so a project name such as ``charm64`` is not read as one.
-_ARM64 = re.compile(r"(?<![a-z0-9])(?:arm64|aarch64)", re.I)
-_X64 = re.compile(r"(?<![a-z0-9])(?:x64|amd64|x86[-_]?64|win64)", re.I)
+# Markers must be whole tokens, so a project name such as ``charm64`` or
+# ``arm64helper`` is not read as one.
+_ARM64 = re.compile(r"(?<![a-z0-9])(?:arm64|aarch64)(?![a-z0-9])", re.I)
+_X64 = re.compile(r"(?<![a-z0-9])(?:x64|amd64|x86[-_]?64|win64)(?![a-z0-9])", re.I)
 _X86 = re.compile(
-    r"(?<![a-z0-9])(?:i[3-6]86|ia32|win32|x86(?![-_]?64))|(?<!\d)386(?!\d)"
-    r"|(?<![a-z0-9])x32(?![a-z0-9])|(?<!\d)32[-_]?bit",
+    r"(?<![a-z0-9])(?:i[3-6]86|ia32|win32|x86(?![-_]?64))(?![a-z0-9])"
+    r"|(?<!\d)386(?!\d)|(?<![a-z0-9])x32(?![a-z0-9])|(?<!\d)32[-_]?bit",
     re.I,
 )
 # 32-bit ARM, which Scoop has no architecture for.

@@ -125,6 +125,9 @@ class HelperTest(unittest.TestCase):
             "tool-windows-32-bit.zip": "32bit",
             "tool-win-x32.zip": "32bit",
             "charm64-windows.zip": "64bit",
+            "arm64helper-windows-x64.zip": "64bit",
+            "x64helper-windows-arm64.zip": "arm64",
+            "tool-win32helper-x64.zip": "64bit",
             "swarm64-win.zip": "64bit",
             "charm64-windows-arm64.zip": "arm64",
             "tool-windows-aarch64.zip": "arm64",
@@ -337,6 +340,13 @@ class SelectAssetsTest(unittest.TestCase):
             "tool-solaris-x64.zip", "tool-ubuntu-x64.zip", "tool.zip",
         )]
         self.assertEqual(am.select_assets([*others, win], None), {"64bit": win})
+
+    def test_a_windows_marker_does_not_rescue_an_archive_for_another_os(self) -> None:
+        win = {"name": "tool-win-x64.zip"}
+        other = {"name": "windows-tool-linux-x64.zip"}
+        self.assertEqual(am.select_assets([other, win], None), {"64bit": win})
+        with self.assertRaises(SystemExit):
+            am.select_assets([other], None)
 
     def test_windows_marker_is_not_read_inside_darwin(self) -> None:
         mac = {"name": "tool-darwin-arm64.zip"}
