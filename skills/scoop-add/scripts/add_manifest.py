@@ -245,14 +245,18 @@ def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dic
 
 _ARM64 = re.compile(r"arm64|aarch64", re.I)
 _X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
-_X86 = re.compile(r"i[3-6]86|ia32|win32|x86(?![-_]?64)|(?<!\d)386(?!\d)", re.I)
+_X86 = re.compile(
+    r"i[3-6]86|ia32|win32|x86(?![-_]?64)|(?<!\d)386(?!\d)"
+    r"|(?<![a-z0-9])x32(?![a-z0-9])|(?<!\d)32[-_]?bit",
+    re.I,
+)
 # 32-bit ARM, which Scoop has no architecture for.
 _ARM32 = re.compile(
-    r"aarch32|arm(?:32|hf|el)|(?<![a-z0-9])arm(?:v\d\w*)?(?![a-z0-9])", re.I)
+    r"(?<![a-z0-9])(?:aarch32|arm(?:32|hf|el|v\d\w*)?)(?![a-z0-9])", re.I)
 # Archives for another operating system, skipped when assets are picked by default.
 _NON_WINDOWS = re.compile(
-    r"(?<![a-z0-9])(?:linux|darwin|mac(?:os)?|osx|apple|freebsd|netbsd|openbsd|android)"
-    r"(?![a-z0-9])", re.I)
+    r"(?<![a-z0-9])(?:linux|darwin|mac(?:osx?)?|osx|apple|freebsd|netbsd|openbsd|android)"
+    r"(?![a-z])", re.I)
 ARCH_CLASSES = ("64bit", "32bit", "arm64")
 
 

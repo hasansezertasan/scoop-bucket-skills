@@ -113,6 +113,11 @@ class HelperTest(unittest.TestCase):
             "tool-win32.zip": "32bit",
             "tool-i686-windows.zip": "32bit",
             "tool_windows_386.zip": "32bit",
+            "tool-windows-32bit.zip": "32bit",
+            "tool-windows-32-bit.zip": "32bit",
+            "tool-win-x32.zip": "32bit",
+            "carmel-windows.zip": "64bit",
+            "armello-win.zip": "64bit",
             "tool-armv7-windows.zip": None,
             "tool-arm32.zip": None,
             "tool-armhf.zip": None,
@@ -301,6 +306,14 @@ class SelectAssetsTest(unittest.TestCase):
             {"name": "tool-linux-x64.zip"},
         )
         self.assertEqual(am.select_assets([win, mac, linux], None), {"64bit": win})
+
+    def test_default_selection_skips_os_names_with_digits_or_suffixes(self) -> None:
+        win = {"name": "tool-win64.zip"}
+        others = [{"name": n} for n in (
+            "tool-linux64.zip", "tool-osx64.zip", "tool-macosx-arm64.zip",
+            "tool-darwin64.zip",
+        )]
+        self.assertEqual(am.select_assets([win, *others], None), {"64bit": win})
 
     def test_explicit_artifact_may_still_name_a_non_windows_looking_asset(self) -> None:
         mac = {"name": "linuxdeploy-darwin-arm64.zip"}
