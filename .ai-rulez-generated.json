@@ -1,6 +1,6 @@
 {
   "schema_version": "v1",
-  "source_hash": "blake3:19ad167c731751122b57c0820d217cb923d88cee2683502faf1917032f6cfd00",
+  "source_hash": "blake3:b442bc7dd3082e6185a4efb792334106e39aa9f3055d418f1a3bd9a38257ca3b",
   "outputs": {
     ".agents/plugins/marketplace.json": {
       "content_hash": "blake3:7e637889a6194771c216496e1d7bacd605789846d89780d336b6414bbdd5daf1",
@@ -23,7 +23,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/SKILL.md": {
-      "content_hash": "blake3:5cffa82760a88aea93b848be203e506565187eb2f974290c94936f6391e88e57",
+      "content_hash": "blake3:4981160a1df5b367555bf7c2f609d968ab1710807a0a88f68bc2e07796d46764",
       "mode": "0644"
     },
     "skills/scoop-add/index.md": {
@@ -35,7 +35,7 @@
       "mode": "0644"
     },
     "skills/scoop-add/scripts/add_manifest.py": {
-      "content_hash": "blake3:c0db5af29e999e9b6aa8cc09d4f5cd70c8ec188b4e4204e31b02b69f3b62fab1",
+      "content_hash": "blake3:dc1bee0c6789107061f4b5bc2a1f0830249604620cf032dd074de760e70837ef",
       "mode": "0755"
     },
     "skills/scoop-add/scripts/bucket_repository.py": {
@@ -71,7 +71,7 @@
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/SKILL.md": {
-      "content_hash": "blake3:a0db182b993272a318aecad668852ca7f543cc40d4ed4690e2f89fa05ad9fcd3",
+      "content_hash": "blake3:67438a8c93ae120e41c0b1083cbf2f7b8b7093fc6e1cabe81e8aec5cf332b158",
       "mode": "0644"
     },
     "skills/scoop-fix-manifest/index.md": {
@@ -107,7 +107,7 @@
       "mode": "0644"
     },
     "skills/scoop-update-triage/SKILL.md": {
-      "content_hash": "blake3:6b4520a4e2cbc86648498dc568d06c60410c4be359c4e232b2e2af4bf676ebef",
+      "content_hash": "blake3:9850b09485583c17a192503e809b1437d5231a1ff23c3d7536a9c25c24ca94b7",
       "mode": "0644"
     },
     "skills/scoop-update-triage/index.md": {
