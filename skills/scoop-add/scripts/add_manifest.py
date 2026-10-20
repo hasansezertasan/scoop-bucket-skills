@@ -74,6 +74,19 @@ _PLACEHOLDER_VERSION = "0.0.0"
 
 
 @dataclass(frozen=True)
+class ArchitectureSpec:
+    """Values for one architecture class of a binary manifest."""
+
+    download_url: str
+    sha256: str
+    extract_dir: str | None
+    executable: str
+    autoupdate_url: str
+    autoupdate_extract_dir: str | None = None
+    autoupdate_bin: str | None = None
+
+
+@dataclass(frozen=True)
 class BinaryManifestSpec:
     """Values required to render a binary manifest."""
 
@@ -82,13 +95,8 @@ class BinaryManifestSpec:
     description: str
     license_id: str
     version: str
-    download_url: str
-    sha256: str
-    extract_dir: str | None
-    executable: str
-    autoupdate_url: str
-    autoupdate_extract_dir: str | None = None
-    autoupdate_bin: str | None = None
+    checkver: dict
+    architectures: dict[str, ArchitectureSpec]
 
 
 @dataclass(frozen=True)
@@ -189,50 +197,89 @@ def spdx_license(meta: dict) -> str:
     return "TODO-set-SPDX-license"
 
 
-def select_zip(assets: list[dict], wanted: str | None) -> dict:
-    """Pick the release asset to package, honoring --artifact or preferring a .zip."""
+def group_by_architecture(names: list[str]) -> dict[str, str]:
+    """Map each architecture class to the one asset name that targets it.
+
+    Exits when a name is 32-bit ARM (Scoop has no such architecture) or when two
+    names target the same class, so the caller never has to guess between them.
+    """
+    grouped: dict[str, list[str]] = {}
+    for name in names:
+        arch = classify_arch(name)
+        if arch is None:
+            sys.exit(f"error: {name!r} targets 32-bit ARM, which Scoop has no "
+                     "architecture for; pass --artifact to choose the assets to package")
+        grouped.setdefault(arch, []).append(name)
+    for arch, found in grouped.items():
+        if len(found) > 1:
+            sys.exit(f"error: multiple assets look like {arch} builds "
+                     f"({', '.join(found)}); pass --artifact once per asset to choose")
+    return {arch: grouped[arch][0] for arch in ARCH_CLASSES if arch in grouped}
+
+
+def select_assets(assets: list[dict], wanted: list[str] | None) -> dict[str, dict]:
+    """Pick the release assets to package, keyed by architecture class.
+
+    Honors ``--artifact`` (repeatable) or else takes the ``.zip`` assets that name
+    Windows, or every one that does not name another operating system when none does.
+    """
     if not assets:
         sys.exit("error: the latest release has no downloadable assets; pass --seed "
                  "to scaffold a placeholder, or --artifact once a release exists")
+    by_name = {a["name"]: a for a in assets}
     if wanted:
-        for asset in assets:
-            if asset["name"] == wanted:
-                return asset
-        names = ", ".join(a["name"] for a in assets)
-        sys.exit(f"error: no asset named {wanted!r}; available: {names}")
-    zips = [a for a in assets if a["name"].lower().endswith(".zip")]
-    if len(zips) == 1:
-        return zips[0]
-    if len(zips) > 1:
-        # Multiple .zip assets usually means per-architecture builds. One 64bit
-        # manifest can't serve both, so make the choice explicit instead of guessing.
-        names = ", ".join(a["name"] for a in zips)
-        sys.exit(f"error: multiple .zip assets ({names}); pass --artifact to pick one. "
-                 "Per-architecture builds need a hand-written `architecture` block this "
-                 "scaffolder does not emit")
-    names = ", ".join(a["name"] for a in assets)
-    sys.exit(f"error: no .zip asset found; pass --artifact to choose one of: {names}")
+        for name in wanted:
+            if name not in by_name:
+                sys.exit(f"error: no asset named {name!r}; available: "
+                         f"{', '.join(by_name)}")
+        names = list(wanted)
+    else:
+        zips = [n for n in by_name if n.lower().endswith(".zip")]
+        # An explicit Windows marker beats guessing which other platforms to skip.
+        windows_only = [n for n in zips if not _NON_WINDOWS.search(n)]
+        names = [n for n in windows_only if _WINDOWS.search(n)] or windows_only
+        if not names:
+            sys.exit("error: no Windows .zip asset found; pass --artifact to choose "
+                     "one of: "
+                     f"{', '.join(by_name)}")
+    return {arch: by_name[name] for arch, name in group_by_architecture(names).items()}
 
 
-_NON_X64 = re.compile(
-    r"arm64|aarch(?:32|64)|(?<![a-z0-9])arm(?:v\d\w*)?(?![a-z0-9])"
-    r"|i[3-6]86|ia32|win32|x86(?![-_]?64)",
+# Markers must be whole tokens, so a project name such as ``charm64`` or
+# ``arm64helper`` is not read as one.
+_ARM64 = re.compile(r"(?<![a-z0-9])(?:arm64|aarch64)(?![a-z0-9])", re.I)
+_X64 = re.compile(r"(?<![a-z0-9])(?:x64|amd64|x86[-_]?64|win64)(?![a-z0-9])", re.I)
+_X86 = re.compile(
+    r"(?<![a-z0-9])(?:i[3-6]86|ia32|win32|x86(?![-_]?64))(?![a-z0-9])"
+    r"|(?<!\d)386(?!\d)|(?<![a-z0-9])x32(?![a-z0-9])|(?<!\d)32[-_]?bit",
     re.I,
 )
-_X64 = re.compile(r"arm64|aarch64|\barm\b|i[3-6]86|ia32|x86(?![-_]?64)", re.I)
-_X64 = re.compile(r"x64|amd64|x86[-_]?64|win64", re.I)
+# 32-bit ARM, which Scoop has no architecture for.
+_ARM32 = re.compile(
+    r"(?<![a-z0-9])(?:aarch32|arm(?:32|hf|el|v\d\w*)?)(?![a-z0-9])", re.I)
+# An asset that says it is for Windows, and archives that name another operating system.
+_WINDOWS = re.compile(r"(?<![a-z0-9])(?:win(?:dows)?|msvc)(?![a-z])", re.I)
+_NON_WINDOWS = re.compile(
+    r"(?<![a-z0-9])(?:linux|darwin|mac(?:osx?)?|osx|apple|freebsd|netbsd|openbsd"
+    r"|android|ubuntu|debian|fedora|centos|alpine)(?![a-z])", re.I)
+ARCH_CLASSES = ("64bit", "32bit", "arm64")
 
 
-def warn_if_not_x64(asset_name: str) -> None:
-    """Warn when the chosen asset looks like a non-x64 build.
+def classify_arch(asset_name: str) -> str | None:
+    """Return the architecture class an asset name targets, or None for 32-bit ARM.
 
-    The scaffolder always writes ``architecture.64bit``, so an ARM or 32-bit
-    archive would be offered to x64 machines.
+    A name with no architecture marker counts as ``64bit``. An explicit x64 marker
+    outranks a 32-bit one, so ``tool-win32-x64.zip`` is ``64bit``.
     """
-    if _NON_X64.search(asset_name) and not _X64.search(asset_name):
-        print(f"warning: {asset_name!r} looks like a non-x64 build, but the manifest "
-              "is written under architecture.64bit; pick an x64 asset or hand-write "
-              "the architecture block before merging", file=sys.stderr)
+    if _ARM64.search(asset_name):
+        return "arm64"
+    if _X64.search(asset_name):
+        return "64bit"
+    if _ARM32.search(asset_name):
+        return None
+    if _X86.search(asset_name):
+        return "32bit"
+    return "64bit"
 
 
 def download_zip(url: str) -> str:
@@ -311,8 +358,12 @@ def inspect_zip(path: str, token: str) -> tuple[str | None, str | None, str]:
                                "one to shim")
 
 
-def templatize(text: str, version: str) -> str:
-    """Replace the literal version in a URL/tag with Scoop's ``$version`` template."""
+def templatize(text: str, version: str, *, required: bool = False) -> str:
+    """Replace the literal version in a URL/tag with Scoop's ``$version`` template.
+
+    A name that never carried the version (``tool-windows.zip``) is returned as is;
+    ``required`` makes that a warning, for text that must follow the release.
+    """
     if not version:
         return text
     target = version
@@ -328,14 +379,18 @@ def templatize(text: str, version: str) -> str:
         elif quoted_slash.upper() in text:
             target = quoted_slash.upper()
         else:
-            print(f"warning: version {version!r} not found in {text!r}; that part of the "
-                  "URL won't auto-update on release bumps — verify the manifest",
-                  file=sys.stderr)
+            if required:
+                print(f"warning: version {version!r} not found in {text!r}; that part "
+                      "of the URL won't auto-update on release bumps — verify the "
+                      "manifest", file=sys.stderr)
             return text
     # Match the version as a whole token, not inside a longer one, so a short
     # version such as "3" leaves "win32", "armv3" and "x64" alone. A dotted
     # version is distinctive enough to follow only the digit rule.
-    before = r"(?<!\d)" if "." in target else r"(?:(?<![0-9A-Za-z])|(?<=(?<![0-9A-Za-z])[vV]))"
+    # A whole percent-encoded character (``%23``) before the version is a boundary too.
+    encoded = r"(?<=%[0-9A-Fa-f]{2})"
+    before = (rf"(?:(?<!\d)|{encoded})" if "." in target
+              else rf"(?:(?<![0-9A-Za-z])|{encoded}|(?<=(?<![0-9A-Za-z])[vV]))")
     templated = re.sub(rf"{before}{re.escape(target)}(?!\.?\d)", "$version", text)
     if templated == text:
         print(f"warning: version {version!r} appears in {text!r} only inside a longer "
@@ -344,31 +399,179 @@ def templatize(text: str, version: str) -> str:
     return templated
 
 
+def split_tag(tag: str) -> tuple[str, str]:
+    """Split a release tag into ``(tag prefix, version)`` at its first digit."""
+    match = re.search(r"\d", tag)
+    return (tag[:match.start()], tag[match.start():]) if match else ("", tag)
+
+
+def _prefix_char_pattern(char: str) -> str:
+    """Match ``char`` as written or, when a URL encodes it, percent-encoded."""
+    raw = re.sub(r"([.^$*+?{}\[\]\\|()])", r"\\\1", char)
+    encoded = quote(char, safe="")
+    if encoded == char:
+        return raw
+    hex_case = "".join(f"[{c}{c.lower()}]" if c.isalpha() else c for c in encoded)
+    return f"(?:{raw}|{hex_case})"
+
+
+def github_checkver(repository_url: str, prefix: str) -> dict:
+    """Build the ``checkver`` block; add a regex unless Scoop's default reads the tag.
+
+    The default reads an optional ``v`` or ``V``, but the bucket's updater strips only
+    a lowercase ``v``, so anything but ``v`` and no prefix gets an explicit regex.
+    """
+    checkver = {"github": repository_url}
+    if prefix not in ("", "v"):
+        literal = "".join(_prefix_char_pattern(char) for char in prefix)
+        # Scoop applies the regex to the tag name (API mode) or to the whole releases
+        # page (HTML mode), so anchor it to the tag link or the start of the tag.
+        checkver["regex"] = f"(?:/releases/tag/|^){literal}([\\d.-]+)"
+    return checkver
+
+
+def _url_forms(text: str) -> set[str]:
+    """The spellings of ``text`` a GitHub download URL may carry."""
+    full = quote(text, safe="")
+    lowered = re.sub(r"%[0-9A-F]{2}", lambda m: m.group().lower(), full)
+    return {text, quote(text), full, lowered}
+
+
+def _templatize_tag(tag_part: str, prefix: str, version: str) -> str:
+    """Fill the version slot in a URL's tag segment, keeping the tag prefix literal."""
+    for spelled_prefix in _url_forms(prefix):
+        if (tag_part.startswith(spelled_prefix)
+                and tag_part[len(spelled_prefix):] in _url_forms(version)):
+            return f"{spelled_prefix}$version"
+    return templatize(tag_part, version, required=True)
+
+
 def render_binary(spec: BinaryManifestSpec) -> dict:
-    """Build an ordered binary manifest."""
-    arch: dict = {"url": spec.download_url, "hash": spec.sha256}
-    if spec.extract_dir:
-        arch["extract_dir"] = spec.extract_dir
-    autoupdate_arch: dict = {"url": spec.autoupdate_url}
-    if spec.autoupdate_extract_dir:
-        autoupdate_arch["extract_dir"] = spec.autoupdate_extract_dir
-    autoupdate: dict = {
-        "architecture": {"64bit": autoupdate_arch}
-    }
-    if spec.autoupdate_bin:
-        autoupdate["bin"] = spec.autoupdate_bin
-        autoupdate["shortcuts"] = [[spec.autoupdate_bin, spec.token]]
-    return {
+    """Build an ordered binary manifest.
+
+    ``bin`` and ``shortcuts`` stay top-level while every architecture shims the same
+    executable, and move into each architecture block once they differ.
+    """
+    archs = spec.architectures
+    shared_bin = (len({a.executable for a in archs.values()}) == 1
+                  and len({a.autoupdate_bin for a in archs.values()}) == 1)
+    first = next(iter(archs.values()))
+    manifest_archs: dict = {}
+    autoupdate_archs: dict = {}
+    for name, arch in archs.items():
+        block: dict = {"url": arch.download_url, "hash": arch.sha256}
+        if arch.extract_dir:
+            block["extract_dir"] = arch.extract_dir
+        autoupdate_block: dict = {"url": arch.autoupdate_url}
+        if arch.autoupdate_extract_dir:
+            autoupdate_block["extract_dir"] = arch.autoupdate_extract_dir
+        if not shared_bin:
+            block["bin"] = arch.executable
+            block["shortcuts"] = [[arch.executable, spec.token]]
+            if arch.autoupdate_bin:
+                autoupdate_block["bin"] = arch.autoupdate_bin
+                autoupdate_block["shortcuts"] = [[arch.autoupdate_bin, spec.token]]
+        manifest_archs[name] = block
+        autoupdate_archs[name] = autoupdate_block
+    autoupdate: dict = {"architecture": autoupdate_archs}
+    if shared_bin and first.autoupdate_bin:
+        autoupdate["bin"] = first.autoupdate_bin
+        autoupdate["shortcuts"] = [[first.autoupdate_bin, spec.token]]
+    data: dict = {
         "version": spec.version,
         "description": spec.description,
         "homepage": spec.repository_url,
         "license": spec.license_id,
-        "architecture": {"64bit": arch},
-        "bin": spec.executable,
-        "shortcuts": [[spec.executable, spec.token]],
-        "checkver": {"github": spec.repository_url},
-        "autoupdate": autoupdate,
+        "architecture": manifest_archs,
     }
+    if shared_bin:
+        data["bin"] = first.executable
+        data["shortcuts"] = [[first.executable, spec.token]]
+    data["checkver"] = spec.checkver
+    data["autoupdate"] = autoupdate
+    return data
+
+
+def _templated_or_none(text: str | None, version: str) -> str | None:
+    """Return ``text`` with its version slots filled, or None when it has none."""
+    if not text:
+        return None
+    templated = templatize(text, version)
+    return templated if templated != text else None
+
+
+def _architecture_spec(*, download_url: str, sha256: str, extract_dir: str | None,
+                       executable: str, autoupdate_url: str,
+                       version: str) -> ArchitectureSpec:
+    return ArchitectureSpec(
+        download_url=download_url,
+        sha256=sha256,
+        extract_dir=extract_dir,
+        executable=executable,
+        autoupdate_url=autoupdate_url,
+        autoupdate_extract_dir=_templated_or_none(extract_dir, version),
+        autoupdate_bin=_templated_or_none(executable, version),
+    )
+
+
+def _release_architecture(asset: dict, prefix: str, version: str, token: str,
+                          args: argparse.Namespace) -> tuple[ArchitectureSpec, str]:
+    """Download one release asset and build its architecture spec and hint."""
+    tmp = download_zip(asset["browser_download_url"])
+    try:
+        sha = sha256_of_file(tmp)
+        found_dir, found_exe, hint = inspect_zip(tmp, token)
+    finally:
+        os.unlink(tmp)
+    extract_dir = args.extract_dir or found_dir
+    exe = args.bin
+    if not exe and found_exe:
+        full_exe = f"{found_dir}/{found_exe}" if found_dir else found_exe
+        if extract_dir:
+            if full_exe.startswith(f"{extract_dir}/"):
+                exe = full_exe[len(extract_dir) + 1:]
+            elif args.extract_dir:
+                sys.exit(f"error: inferred executable '{full_exe}' is outside "
+                         f"--extract-dir '{extract_dir}'; pass --bin")
+            else:
+                exe = full_exe
+        else:
+            exe = full_exe
+    if not exe:
+        sys.exit(f"error: {hint or 'could not determine the executable'}")
+    concrete_url = asset["browser_download_url"]
+    parts = urlsplit(concrete_url)
+    path_prefix, sep, rest = parts.path.partition("/releases/download/")
+    if sep:
+        tag_part, slash, artifact_part = rest.rpartition("/")
+        templated_tag = _templatize_tag(tag_part, prefix, version)
+        templated_artifact = templatize(artifact_part, version)
+        autoupdate_path = f"{path_prefix}{sep}{templated_tag}{slash}{templated_artifact}"
+        autoupdate_url = urlunsplit(
+            (parts.scheme, parts.netloc, autoupdate_path, parts.query, parts.fragment)
+        )
+    else:
+        autoupdate_url = templatize(concrete_url, version, required=True)
+    return _architecture_spec(
+        download_url=concrete_url, sha256=sha, extract_dir=extract_dir,
+        executable=exe, autoupdate_url=autoupdate_url, version=version,
+    ), hint
+
+
+def _seed_architecture(owner: str, repo: str, artifact: str,
+                       args: argparse.Namespace) -> ArchitectureSpec:
+    """Build a placeholder architecture spec from this bucket's conventions."""
+    version = _PLACEHOLDER_VERSION
+    base = f"https://github.com/{owner}/{repo}/releases/download"
+    # A filename that carries the placeholder version must follow the release.
+    return _architecture_spec(
+        download_url=f"{base}/v{version}/{artifact}",
+        sha256=_PLACEHOLDER_SHA,
+        extract_dir=args.extract_dir,
+        executable=args.bin,
+        autoupdate_url=f"{base}/v$version/{templatize(artifact, version)}",
+        version=version,
+    )
 
 
 def add_binary(args: argparse.Namespace) -> None:
@@ -383,6 +586,7 @@ def add_binary(args: argparse.Namespace) -> None:
     repo_url = meta.get("html_url") or f"https://github.com/{owner}/{repo}"
     desc = clean_desc(meta.get("description") or "TODO-set-description")
     license_id = spdx_license(meta)
+    hints: list[tuple[str, str]] = []
 
     if args.seed:
         # No release to introspect: assume this bucket's conventions (a `v<version>`
@@ -390,19 +594,17 @@ def add_binary(args: argparse.Namespace) -> None:
         if not args.bin:
             sys.exit("error: --seed can't inspect the archive; pass --bin <name>.exe "
                      "(and --extract-dir if the zip wraps its contents in a folder)")
-        artifact = args.artifact or f"{token}-windows.zip"
-        version, sha = _PLACEHOLDER_VERSION, _PLACEHOLDER_SHA
-        concrete_url = (f"https://github.com/{owner}/{repo}/releases/download/"
-                        f"v{version}/{artifact}")
-        # A filename that carries the placeholder version must follow the release.
-        autoupdate_artifact = (templatize(artifact, version)
-                               if version in artifact else artifact)
-        autoupdate_url = (f"https://github.com/{owner}/{repo}/releases/download/"
-                          f"v$version/{autoupdate_artifact}")
-        extract_dir, exe, hint = args.extract_dir, args.bin, ""
+        version, prefix = _PLACEHOLDER_VERSION, "v"
+        # The default name is ours, so its architecture is not read from the token.
+        artifacts = (group_by_architecture(args.artifact) if args.artifact
+                     else {"64bit": f"{token}-windows.zip"})
+        architectures = {arch: _seed_architecture(owner, repo, artifact, args)
+                         for arch, artifact in artifacts.items()}
+        guesses = "\n".join(
+            f"      {arch}: tag v$version   artifact: "
+            f"{templatize(artifact, version)}" for arch, artifact in artifacts.items())
         print("==> Seeding placeholder manifest. VERIFY these guessed conventions "
-              "against the first real release:\n"
-              f"      tag: v$version   artifact: {autoupdate_artifact}\n"
+              f"against the first real release:\n{guesses}\n"
               "    update_manifests.py refreshes only version + hash from this URL; "
               "it can't fix a wrong tag/filename pattern.", file=sys.stderr)
     else:
@@ -414,61 +616,24 @@ def add_binary(args: argparse.Namespace) -> None:
                          "use --seed to scaffold a placeholder for the first release")
             raise
         tag = release["tag_name"]
-        # Strip only a lowercase v, as the bucket's scripts/update_manifests.py does,
-        # so the stored version and the updater's agree on every bump.
-        version = tag[1:] if re.fullmatch(r"v\d.*", tag) else tag
+        prefix, version = split_tag(tag)
+        if prefix not in ("", "v"):
+            print(f"warning: release tag {tag!r} has the prefix {prefix!r}, so the "
+                  f"manifest gets a checkver.regex that reads version {version!r}; the "
+                  "bucket's updater (scripts/update_manifests.py) ignores "
+                  "checkver.regex and strips only a lowercase v, so until it honours "
+                  f"the regex it computes {tag!r} on every bump", file=sys.stderr)
         if not re.fullmatch(r"[\d.-]+", version):
-            print(f"warning: release tag {tag!r} gives version {version!r}, which "
-                  "Scoop's github checkver (an optional v or V, then digits, dots and "
-                  "dashes) cannot reproduce, and the bucket's updater strips only a "
-                  "lowercase v; add a checkver regex and keep any literal prefix in "
-                  "the autoupdate URL before merging", file=sys.stderr)
-        asset = select_zip(release.get("assets", []), args.artifact)
-        artifact = asset["name"]
-        warn_if_not_x64(artifact)
-        tmp = download_zip(asset["browser_download_url"])
-        try:
-            sha = sha256_of_file(tmp)
-            found_dir, found_exe, hint = inspect_zip(tmp, token)
-        finally:
-            os.unlink(tmp)
-        extract_dir = args.extract_dir or found_dir
-        exe = args.bin
-        if not exe and found_exe:
-            full_exe = f"{found_dir}/{found_exe}" if found_dir else found_exe
-            if extract_dir:
-                if full_exe.startswith(f"{extract_dir}/"):
-                    exe = full_exe[len(extract_dir) + 1:]
-                elif args.extract_dir:
-                    sys.exit(f"error: inferred executable '{full_exe}' is outside "
-                             f"--extract-dir '{extract_dir}'; pass --bin")
-                else:
-                    exe = full_exe
-            else:
-                exe = full_exe
-        if not exe:
-            sys.exit(f"error: {hint or 'could not determine the executable'}")
-        concrete_url = asset["browser_download_url"]
-        parts = urlsplit(concrete_url)
-        prefix, sep, rest = parts.path.partition("/releases/download/")
-        if sep:
-            tag_part, slash, artifact_part = rest.rpartition("/")
-            templated_tag = templatize(tag_part, version)
-            templated_artifact = templatize(artifact_part, version)
-            autoupdate_path = f"{prefix}{sep}{templated_tag}{slash}{templated_artifact}"
-            autoupdate_url = urlunsplit(
-                (parts.scheme, parts.netloc, autoupdate_path, parts.query, parts.fragment)
-            )
-        else:
-            autoupdate_url = templatize(concrete_url, version)
-
-    autoupdate_extract_dir = None
-    if extract_dir and (version in extract_dir or quote(version, safe="") in extract_dir):
-        autoupdate_extract_dir = templatize(extract_dir, version)
-
-    autoupdate_bin = None
-    if exe and (version in exe or quote(version, safe="") in exe):
-        autoupdate_bin = templatize(exe, version)
+            print(f"warning: version {version!r} has characters beyond digits, dots "
+                  "and dashes, which Scoop's github checkver cannot capture. The tag "
+                  "is split at its first digit, so a digit in the tag's own name "
+                  "(win32-v1.2.3) lands in the version; adjust checkver by hand "
+                  "before merging", file=sys.stderr)
+        architectures = {}
+        for arch, asset in select_assets(release.get("assets", []), args.artifact).items():
+            spec, hint = _release_architecture(asset, prefix, version, token, args)
+            architectures[arch] = spec
+            hints.append((arch, hint))
 
     data = render_binary(
         BinaryManifestSpec(
@@ -477,30 +642,30 @@ def add_binary(args: argparse.Namespace) -> None:
             description=desc,
             license_id=license_id,
             version=version,
-            download_url=concrete_url,
-            sha256=sha,
-            extract_dir=extract_dir,
-            executable=exe,
-            autoupdate_url=autoupdate_url,
-            autoupdate_extract_dir=autoupdate_extract_dir,
-            autoupdate_bin=autoupdate_bin,
+            checkver=github_checkver(repo_url, prefix),
+            architectures=architectures,
         )
     )
     out = _write_manifest(token, data)
     print(f"==> Wrote {out.parent.name}/{out.name} (binary, version {version})")
-    if hint:
-        print(f"warning: {hint}", file=sys.stderr)
-    _binary_next_steps(token, extract_dir, exe)
+    for arch, hint in hints:
+        if hint:
+            print(f"warning: {arch}: {hint}" if len(hints) > 1 else f"warning: {hint}",
+                  file=sys.stderr)
+    _binary_next_steps(token, architectures)
 
 
-def _binary_next_steps(token: str, extract_dir: str | None, exe: str) -> None:
+def _binary_next_steps(token: str, architectures: dict[str, ArchitectureSpec]) -> None:
     print(f"\nNext: verify the manifest, then `scoop install <bucket>/{token}` on "
           "Windows.", file=sys.stderr)
     print("      Run `mise run generate-readme` before committing.", file=sys.stderr)
-    if extract_dir is None:
-        print("      No extract_dir was set (archive has no single wrapping folder) — "
-              "confirm the .exe sits at the archive root.", file=sys.stderr)
-    print(f"      Shimming bin: {exe}. Add a smoke-test command to tests.yml if it "
+    flat = [arch for arch, spec in architectures.items() if spec.extract_dir is None]
+    if flat:
+        print(f"      No extract_dir was set for {', '.join(flat)} (archive has no "
+              "single wrapping folder) — confirm the .exe sits at the archive root.",
+              file=sys.stderr)
+    exes = ", ".join(dict.fromkeys(spec.executable for spec in architectures.values()))
+    print(f"      Shimming bin: {exes}. Add a smoke-test command to tests.yml if it "
           f"isn't `{token} version`.", file=sys.stderr)
 
 
@@ -631,8 +796,9 @@ def build_parser() -> argparse.ArgumentParser:
     binary.add_argument("--bin", help="the .exe to shim (default: inferred from the zip)")
     binary.add_argument("--extract-dir",
                         help="wrapping folder Scoop strips (default: inferred from the zip)")
-    binary.add_argument("--artifact",
-                        help="release asset filename to package (default: the lone .zip)")
+    binary.add_argument("--artifact", action="append",
+                        help="release asset filename to package, once per architecture "
+                             "(default: every .zip, classified by its name)")
     binary.add_argument("--seed", action="store_true",
                         help="write a 0.0.0 placeholder without downloading (requires --bin)")
     binary.set_defaults(func=add_binary)

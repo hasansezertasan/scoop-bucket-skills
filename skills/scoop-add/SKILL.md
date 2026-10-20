@@ -26,10 +26,16 @@ suffix. The script infers the bucket's GitHub repository from `origin` so the
 manifest can download `scripts/noop.ps1`; pass `--bucket-repository` when that
 cannot be inferred.
 
-For a binary, the script fetches the latest GitHub release, selects a `.zip`,
-computes SHA-256, and inspects the archive for `extract_dir` and `bin`. Use
-`--artifact` when several archives exist. Before the first release, use `--seed`
-with `--bin` and verify the assumed tag and filename pattern later.
+For a binary, the script fetches the latest GitHub release, classifies each
+`.zip` asset that names Windows (or, when none does, every one that doesn't name
+another operating system) as `64bit`, `32bit` or `arm64` from its name (no marker
+means `64bit`), and writes one `architecture` block per class, with its own SHA-256
+and `extract_dir` from inspecting that archive. Use `--artifact`, once per
+asset, when two assets look like the same architecture. The tag's prefix before
+its first digit stays literal in the autoupdate URL, and any prefix other than
+`v` adds a `checkver.regex`; the bucket's updater ignores that regex, so check
+the warning it prints. Before the first release, use `--seed` with `--bin` and
+verify the assumed tag and filename pattern later.
 
 After scaffolding:
 
